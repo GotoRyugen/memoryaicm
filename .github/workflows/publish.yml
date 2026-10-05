@@ -1,0 +1,41 @@
+name: Publication PyPI
+
+# Déclenchée par un tag de version : git tag v0.6.0 && git push --tags
+# Prérequis (une fois) : sur pypi.org, projet memoryaicm → Publishing → ajouter ce dépôt GitHub
+# comme « trusted publisher » (workflow publish.yml, environment pypi). Aucun jeton à stocker.
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: python -m pytest -q
+        env:
+          MEMORYAICM_NO_DOTENV: "1"
+      - run: python -m build
+      - run: twine check dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

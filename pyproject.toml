@@ -1,19 +1,43 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "memoryaicm"
-version = "0.5.0"
-description = "Mémoire tri-couche pour agents LLM : journal append-only, index ACT-R, sommeil, adaptateur compilé, validateur hors modèle."
+version = "0.6.0"
+description = "Mémoire locale, auditable et neutre pour agents LLM — journal append-only chaîné SHA-256, index ACT-R, consolidation, validateur hors modèle, RGPD. Local, auditable, provider-neutral memory for LLM agents."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "AGPL-3.0-or-later OR LicenseRef-Commercial"
+license-files = ["LICENSE", "LICENSE-COMMERCIAL.md"]
+authors = [{ name = "Eugène Baumela", email = "baumela.eugene@gmail.com" }]
+keywords = ["llm", "memory", "agents", "mcp", "claude", "ollama", "openai", "rag", "act-r", "append-only", "audit", "gdpr", "rgpd", "local-first"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Database",
+  "Natural Language :: French",
+  "Natural Language :: English",
+]
 dependencies = []
 
 [project.optional-dependencies]
 claude = ["anthropic>=0.40"]
-dev = ["pytest>=8"]
+secure = ["cryptography>=42"]
+dev = ["pytest>=8", "cryptography>=42", "build>=1.2", "twine>=5"]
+
+[project.urls]
+Homepage = "https://github.com/VOTRE-COMPTE/memoryaicm"
+Source = "https://github.com/VOTRE-COMPTE/memoryaicm"
+Issues = "https://github.com/VOTRE-COMPTE/memoryaicm/issues"
+Changelog = "https://github.com/VOTRE-COMPTE/memoryaicm/blob/main/CHANGELOG.md"
 
 [project.scripts]
 memoryaicm = "memoryaicm.cli:main"

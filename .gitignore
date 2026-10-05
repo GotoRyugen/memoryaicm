@@ -1,6 +1,6 @@
 # secrets et données locales — jamais dans le dépôt
 .env
-data/
+/data/
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm

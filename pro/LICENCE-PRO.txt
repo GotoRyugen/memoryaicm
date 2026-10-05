@@ -1,0 +1,27 @@
+memoryaicm Pro — conditions de licence
+=======================================
+
+Objet. La présente licence accorde à l'acheteur (le « Licencié ») le droit d'installer et d'utiliser memoryaicm,
+version {version} et ses mises à jour fournies pendant un an, sur UN poste de travail, pour ses besoins propres.
+
+Ce que le Licencié peut faire : utiliser le logiciel pour son usage interne, professionnel ou personnel, sans
+obligation de publier son propre code ; le modifier pour cet usage ; en faire des copies de sauvegarde.
+
+Ce que la licence Pro ne couvre pas : la redistribution du logiciel ou d'une œuvre dérivée, son intégration
+dans un produit ou un service fourni à des tiers, son installation sur plusieurs postes. Ces usages relèvent
+de la licence commerciale Entreprise (sur devis : baumela.eugene@gmail.com) ou de la licence AGPL-3.0, au
+choix du Licencié.
+
+Clé de licence. La clé reçue à l'achat identifie le Licencié pour le support et les mises à jour. Elle est
+personnelle et ne doit pas être communiquée.
+
+Support. Assistance par e-mail pendant un an, réponse sous deux jours ouvrés.
+
+Garantie. Le logiciel est fourni tel quel ; l'auteur ne garantit pas qu'il convient à un usage particulier
+ni qu'il est exempt d'erreurs, dans les limites permises par la loi. La responsabilité de l'auteur est
+limitée au montant payé.
+
+Droit applicable : droit français. Les présentes conditions prévalent, pour le Licencié, sur la licence
+AGPL-3.0 jointe (fichier LICENSE), qui reste disponible à quiconque préfère ses termes.
+
+© 2026 Eugène Baumela.

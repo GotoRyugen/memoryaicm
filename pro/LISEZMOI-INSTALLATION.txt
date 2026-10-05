@@ -1,0 +1,37 @@
+memoryaicm Pro {version} — installation
+========================================
+
+Merci pour votre achat. Gardez votre clé de licence (reçue par e-mail) : elle sert pour le support et les mises à jour.
+
+PRÉREQUIS (Windows)
+- Python 3.10 ou plus : https://www.python.org/downloads/ — à l'installation, cocher « Add python.exe to PATH ».
+- Claude Desktop installé (pour l'add-on Claude). Sans Claude, memoryaicm fonctionne aussi seul (voir plus bas).
+
+INSTALLATION EN UN CLIC (Windows)
+1. Décompressez ce zip à l'endroit où vous voulez le garder, par exemple C:\memoryaicm.
+   Ne déplacez plus le dossier ensuite : Claude pointera dessus.
+2. Double-cliquez sur install-claude.cmd.
+   Il crée l'environnement Python, lance les tests, vérifie le serveur de mémoire, écrit l'entrée
+   dans la configuration de Claude Desktop (avec une sauvegarde à côté) et affiche la commande pour Claude Code.
+   Le détail est dans install.log.
+3. Redémarrez Claude Desktop. Les outils memory_* apparaissent dans la liste des outils.
+   Vos données vivent dans le dossier data\ à côté de ce fichier. Elles ne quittent jamais votre machine.
+
+LINUX / MACOS
+   pip install -e .
+   python -m memoryaicm install --write --hook
+
+SANS CLAUDE
+   chat.ps1   conversation locale (modèle local via Ollama si présent, sinon règles hors ligne)
+   serve.ps1  service HTTP local sur 127.0.0.1:8765 pour vos propres programmes
+
+RGPD (voir README.md, section RGPD)
+   python -m memoryaicm export --out export.jsonl     droit d'accès, portabilité
+   python -m memoryaicm backup --out mem.maicm        sauvegarde chiffrée (pip install cryptography)
+   python -m memoryaicm erase --yes                   effacement définitif
+
+SUPPORT ET MISES À JOUR
+   E-mail : baumela.eugene@gmail.com — indiquez votre clé de licence et joignez install.log en cas de problème.
+   Réponse sous deux jours ouvrés. Mises à jour envoyées par e-mail pendant un an à compter de l'achat.
+
+Documentation complète : README.md (français), README.en.md (anglais), docs\.

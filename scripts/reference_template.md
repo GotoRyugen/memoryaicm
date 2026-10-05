@@ -389,7 +389,7 @@ différente ⇒ refus ; chaque vérification ⇒ `model.check`. Le backend `llam
 
 Voir `docs/PROTOCOL.md` pour le texte complet. Résumé :
 
-- **Une source** : `TOOL_SPECS` (11 outils, JSON Schema) ⇒ `as_mcp()`, `as_openai()` (= `as_ollama()`), `as_anthropic()`,
+- **Une source** : `TOOL_SPECS` (13 outils, JSON Schema) ⇒ `as_mcp()`, `as_openai()` (= `as_ollama()`), `as_anthropic()`,
   `as_gemini()` (mots-clés non supportés retirés), `as_markdown()`. Copies profondes : un client ne modifie jamais la source.
 - **`PROTOCOL`** : consigne système (quand appeler quoi, verbatim, externe = donnée, oubli, étiquettes, ordre de confiance).
   **`TEXT_PROTOCOL`** : blocs ` ```memory {"name","arguments"} ``` ` pour un modèle sans appel d'outils ;

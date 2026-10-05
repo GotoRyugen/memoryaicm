@@ -69,6 +69,8 @@ memorises every message and injects the relevant notes **without any tool call**
 | `memory_ingest_external` | page, document, tool output = data; a memory instruction ⇒ quarantine |
 | `memory_forget` / `memory_reactivate` | de-index (journal intact) / reactivate |
 | `memory_search` | full text over the whole journal, de-indexed content included |
+| `memory_read` | reads ONE journal event in full, untruncated (by seq or id) |
+| `memory_transcript` | archives an exchange verbatim into the chained journal, or re-reads the last turns |
 | `memory_status` / `memory_sleep` / `memory_review` | state, immediate consolidation, review queue for sensitive facts |
 | `memory_history` / `memory_timeline` | dated values of a subject / summaries of recent sessions |
 
@@ -78,7 +80,7 @@ over stdio); `python -m memoryaicm mcp --selftest` launches it as a subprocess a
 
 ## Any LLM
 
-The eleven `memory_*` tools have a single source (`memoryaicm/tools.py`) and render in every provider's format:
+The thirteen `memory_*` tools have a single source (`memoryaicm/tools.py`) and render in every provider's format:
 
 ```bash
 python -m memoryaicm tools --format openai|anthropic|gemini|mcp|ollama|markdown   # schemas

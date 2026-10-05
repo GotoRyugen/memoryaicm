@@ -25,11 +25,12 @@ from memoryaicm import __version__  # noqa: E402
 
 FIXED_DATE = (2026, 1, 1, 0, 0, 0)   # reproductible : même contenu ⇒ même archive
 INCLUDE_DIRS = ("memoryaicm", "adapters", "docs", "tests", "bench", "scripts")
-INCLUDE_FILES = ("README.md", "NEUTRAL.md", ".env.example", "pyproject.toml", ".gitignore",
+INCLUDE_FILES = ("README.md", "README.en.md", "NEUTRAL.md", "LICENSE", "LICENSE-COMMERCIAL.md", "CHANGELOG.md", ".env.example", "pyproject.toml", ".gitignore",
                  "setup.ps1", "install-claude.ps1", "install-claude.cmd", "chat.ps1", "serve.ps1")
-EXCLUDE_PARTS = {"__pycache__", ".pytest_cache", ".venv", "dist", "build", "_to_delete"}
+EXCLUDE_PARTS = {"__pycache__", ".pytest_cache", ".venv", "dist", "build", "_to_delete", "site", "mem", "_verif", ".github"}
 EXCLUDE_TOP = {"data"}   # dossier de données d'exécution (pas memoryaicm/data, qui est embarqué)
-EXCLUDE_SUFFIXES = (".pyc", ".sqlite", ".sqlite-wal", ".sqlite-shm", ".log")
+EXCLUDE_SUFFIXES = (".pyc", ".sqlite", ".sqlite-wal", ".sqlite-shm", ".log", ".maicm", ".key")
+EXCLUDE_NAMES = {"locomo10.json", "run_complet.log", "phaseB.log"}   # jeu tiers et traces : pas dans l'archive
 
 MAIN_PY = '''"""memoryaicm_neutral.zip — exécutable tel quel : python memoryaicm_neutral.zip <commande>  (--help)"""
 from memoryaicm.cli import main
@@ -48,7 +49,7 @@ def collect() -> list[tuple[str, bytes]]:
             rel = p.relative_to(ROOT)
             if not p.is_file() or any(part in EXCLUDE_PARTS for part in rel.parts) or rel.parts[0] in EXCLUDE_TOP or p.suffix in EXCLUDE_SUFFIXES:
                 continue
-            if p.name == ".env":
+            if p.name == ".env" or p.name in EXCLUDE_NAMES or ".bak-" in p.name:
                 continue
             files.append((p.relative_to(ROOT).as_posix(), p.read_bytes()))
     for f in INCLUDE_FILES:
@@ -100,7 +101,7 @@ def verify(out: Path) -> bool:
         r = run("--home", home, "--backend", "stub", "mcp", "--selftest")
         ok1 = r.returncode == 0 and "selftest MCP : OK" in r.stderr
         r = run("tools", "--format", "anthropic")
-        ok2 = r.returncode == 0 and len(json.loads(r.stdout)) == 11
+        ok2 = r.returncode == 0 and len(json.loads(r.stdout)) == 13
         r = run("--home", home, "--backend", "stub", "bench")
         ok3 = r.returncode == 0 and "ÉCHEC" not in r.stdout
         r = run("--home", home, "--backend", "stub", "show", "status")

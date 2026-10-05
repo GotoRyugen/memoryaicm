@@ -43,7 +43,7 @@ Tout ce qu'il faut pour utiliser, brancher, auditer et faire évoluer la mémoir
 | `memoryaicm_neutral.zip` | l'archive **exécutable** (zéro dépendance, Python ≥ 3.10) : paquet, adaptateurs, docs, tests | `python memoryaicm_neutral.zip mcp --selftest` puis `install --write --hook` |
 | `docs/reference.html` | la **référence complète**, page navigable hors ligne | ouvrir dans un navigateur |
 | `docs/REFERENCE.md` | la même, en Markdown (générée depuis le code) | section 0 « En une page » |
-| `docs/PROTOCOL.md` | le **protocole universel** : 11 outils, format des faits, consigne système, branchement de chaque LLM | section 4 « Brancher n'importe quel LLM » |
+| `docs/PROTOCOL.md` | le **protocole universel** : 13 outils, format des faits, consigne système, branchement de chaque LLM | section 4 « Brancher n'importe quel LLM » |
 | `docs/SPEC.md` | la spécification d'origine « Mémoire Tri-Couche » | — |
 | `source/` | l'arborescence complète du dépôt (identique au contenu de l'archive, dézippée) | `python -m pytest -q` |
 | `MANIFEST.json` | version, date de construction, SHA-256 de chaque fichier | vérifier l'intégrité |

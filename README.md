@@ -69,6 +69,8 @@ Redémarrer Claude : les outils `memory_*` apparaissent. **Claude génère, la m
 | `memory_ingest_external` | page, document, sortie d'outil = donnée ; instruction mémoire ⇒ quarantaine |
 | `memory_forget` / `memory_reactivate` | désindexer (journal intact) / réactiver |
 | `memory_search` | plein texte sur tout le journal, y compris le désindexé |
+| `memory_read` | relit UN événement du journal en entier, sans troncature (par seq ou id) |
+| `memory_transcript` | archive un échange mot pour mot dans le journal chaîné, ou relit les derniers tours |
 | `memory_status` / `memory_sleep` / `memory_review` | état, consolidation immédiate, file de validation des faits sensibles |
 | `memory_history` / `memory_timeline` | valeurs datées d'un sujet / résumés des sessions récentes |
 
@@ -79,7 +81,7 @@ lui parle en MCP.
 
 ## N'importe quel LLM
 
-Les onze outils `memory_*` ont une seule source (`memoryaicm/tools.py`) et sortent dans le format de chacun :
+Les treize outils `memory_*` ont une seule source (`memoryaicm/tools.py`) et sortent dans le format de chacun :
 
 ```bash
 python -m memoryaicm tools --format openai|anthropic|gemini|mcp|ollama|markdown   # schémas

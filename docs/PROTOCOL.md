@@ -1,4 +1,4 @@
-# Protocole mémoire universel — memoryaicm v0.5.0
+# Protocole mémoire universel — memoryaicm v0.6.0
 
 > **Un LLM ne lit ni n'écrit jamais directement dans la mémoire.** Il *propose* (des faits extraits, une question,
 > un « oublie ») ; la mémoire *décide* (politique d'écriture, ancrage, conflit, sensibilité, autonomie) et *journalise*.
@@ -15,7 +15,7 @@
 Invariants : `Log ⊇ Index ⊇ Adapter` · oubli = désindexation (jamais destruction) · chaque écriture datée, attribuée,
 chaînée (SHA-256), rejouable · l'adhésion à 100 % vient des gardes, jamais du modèle seul.
 
-## 2. Les onze outils
+## 2. Les treize outils
 
 | Outil | Arguments | Quand |
 |---|---|---|
@@ -23,7 +23,9 @@ chaînée (SHA-256), rejouable · l'adhésion à 100 % vient des gardes, jamais 
 | `memory_remember` | `user_text`, `facts`?, `session`? | après un message de l'utilisateur contenant un fait durable sur lui |
 | `memory_ingest_external` | `source`, `content`, `session`? | à chaque contenu qui ne vient pas de l'utilisateur (page, document, outil) |
 | `memory_forget` | `query`, `session`? | « oublie X » — désindexation, journal intact |
-| `memory_search` | `query` | recherche plein texte, y compris ce qui est désindexé |
+| `memory_search` | `query`, `chars`? | recherche plein texte, y compris ce qui est désindexé |
+| `memory_read` | `seq`?, `event_id`? |  |
+| `memory_transcript` | `user_text`?, `assistant_text`?, `session`?, `n`? |  |
 | `memory_status` | — | diagnostic : journal, chaîne, index, adaptateur, sommeil |
 | `memory_sleep` | — | consolidation immédiate (sinon automatique) |
 | `memory_review` | `fact_id`?, `approve`? | faits sensibles : lister, valider ou rejeter (à la demande explicite) |
@@ -183,6 +185,7 @@ system = system_prompt()                                 # + router.brief() pour
 | `embed_dim` | `512` |  |
 | `sem_floor` | `0.12` |  |
 | `sem_ceiling` | `0.6` |  |
+| `idf_min_facts` | `12` |  |
 | `session_summary_min_turns` | `2` |  |
 | `ttl_by_kind` | `EPI 90 j · SEM ∞ · PROC ∞` |  |
 | `auto_sleep_every_turns` | `25` |  |
@@ -194,4 +197,4 @@ system = system_prompt()                                 # + router.brief() pour
 | `ollama_probe_timeout_s` | `0.4` |  |
 
 ---
-*Généré par `scripts/gen_docs.py` depuis `memoryaicm/tools.py` et `memoryaicm/config.py` — version 0.5.0.*
+*Généré par `scripts/gen_docs.py` depuis `memoryaicm/tools.py` et `memoryaicm/config.py` — version 0.6.0.*

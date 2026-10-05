@@ -112,7 +112,7 @@ figcaption { margin-top: 8px; font-size: 12px; color: var(--muted); min-width: 9
 <div class="shell">
   <aside class="rail">
     <div class="brand">memoryaicm</div>
-    <div class="ver">référence · v0.5.0 · 2026-09-04</div>
+    <div class="ver">référence · v0.6.0 · 2026-10-05</div>
     <nav id="toc"><a href="#0-en-une-page" class="h2"><span class="n">0</span>En une page</a>
 <a href="#1-architecture" class="h2"><span class="n">1</span>Architecture</a>
 <a href="#11-carte-des-modules-genere" class="h3"><span class="n">1.1</span>Carte des modules (généré)</a>
@@ -167,14 +167,14 @@ figcaption { margin-top: 8px; font-size: 12px; color: var(--muted); min-width: 9
   </aside>
   <div>
     <header class="head">
-      <div class="eyebrow">Mémoire tri-couche · neutre LLM · référence complète · v0.5.0</div>
+      <div class="eyebrow">Mémoire tri-couche · neutre LLM · référence complète · v0.6.0</div>
       <h1>memoryaicm — la mémoire qui n'efface jamais, pour n'importe quel modèle</h1>
       <p class="thesis">Log ⊇ Index ⊇ Adapter · oubli = désindexer · un LLM propose, la politique décide · adhésion 100 % ∈ gardes</p>
       <div class="facts">
-        <div class="fact c"><b>11</b><span>outils, une source</span></div>
+        <div class="fact c"><b>13</b><span>outils, une source</span></div>
         <div class="fact j"><b>22</b><span>types d'événements</span></div>
-        <div class="fact i"><b>103</b><span>tests verts</span></div>
-        <div class="fact a"><b>4 935</b><span>lignes · 33 modules</span></div>
+        <div class="fact i"><b>128</b><span>tests verts</span></div>
+        <div class="fact a"><b>5 439</b><span>lignes · 34 modules</span></div>
         <div class="fact"><b>0</b><span>dépendance</span></div>
         <div class="fact"><b>≥ 3.10</b><span>python</span></div>
       </div>
@@ -264,10 +264,10 @@ figcaption { margin-top: 8px; font-size: 12px; color: var(--muted); min-width: 9
       <figcaption>Tout client passe par les mêmes outils et la même politique ; tout entre par le journal ; l'index et l'adaptateur en sont des projections ; le sommeil consolide et se teste ; le validateur vérifie chaque sortie.</figcaption>
     </figure>
     <article class="doc">
-      <h1 id="memoryaicm-reference-complete-v050">memoryaicm — Référence complète v0.5.0</h1>
+      <h1 id="memoryaicm-reference-complete-v060">memoryaicm — Référence complète v0.6.0</h1>
 <p><em>Mémoire tri-couche pour agents LLM, neutre vis-à-vis du modèle. Ce document est la référence exhaustive : architecture,
 modèle de données, algorithmes, protocole universel, interfaces, intégrations, sécurité, exploitation, tests. Les tableaux
-marqués « généré » sont produits depuis le code par <code>scripts/gen_docs.py</code> (2026-09-04).</em></p>
+marqués « généré » sont produits depuis le code par <code>scripts/gen_docs.py</code> (2026-10-05).</em></p>
 <hr />
 <h2 id="0-en-une-page">0. En une page</h2>
 <p><strong>Ce que c'est.</strong> Un système de mémoire externe pour n'importe quel assistant LLM : un <strong>journal</strong> append-only chaîné
@@ -365,12 +365,12 @@ python memoryaicm_neutral.zip chat                     # autonome, hors ligne
 </tr>
 <tr>
 <td><code>memoryaicm/cli.py</code></td>
-<td>472</td>
+<td>536</td>
 <td>CLI : python -m memoryaicm <commande></td>
 </tr>
 <tr>
 <td><code>memoryaicm/config.py</code></td>
-<td>135</td>
+<td>136</td>
 <td>Réglages du système. Chaque seuil correspond à un symbole de la spec.</td>
 </tr>
 <tr>
@@ -390,7 +390,7 @@ python memoryaicm_neutral.zip chat                     # autonome, hors ligne
 </tr>
 <tr>
 <td><code>memoryaicm/index.py</code></td>
-<td>349</td>
+<td>399</td>
 <td>INDEX · actif · projection.</td>
 </tr>
 <tr>
@@ -405,7 +405,7 @@ python memoryaicm_neutral.zip chat                     # autonome, hors ligne
 </tr>
 <tr>
 <td><code>memoryaicm/llm/__init__.py</code></td>
-<td>79</td>
+<td>104</td>
 <td>Fabrique de backend.</td>
 </tr>
 <tr>
@@ -450,7 +450,7 @@ python memoryaicm_neutral.zip chat                     # autonome, hors ligne
 </tr>
 <tr>
 <td><code>memoryaicm/log.py</code></td>
-<td>155</td>
+<td>159</td>
 <td>JOURNAL · cold · source de vérité.</td>
 </tr>
 <tr>
@@ -470,12 +470,17 @@ python memoryaicm_neutral.zip chat                     # autonome, hors ligne
 </tr>
 <tr>
 <td><code>memoryaicm/policy.py</code></td>
-<td>168</td>
+<td>191</td>
 <td>WRITE · Ctx → Log → Index</td>
 </tr>
 <tr>
+<td><code>memoryaicm/privacy.py</code></td>
+<td>224</td>
+<td>RGPD / GDPR — droits de la personne sur sa mémoire.</td>
+</tr>
+<tr>
 <td><code>memoryaicm/serve.py</code></td>
-<td>241</td>
+<td>285</td>
 <td>Mode serveur : la mémoire devient un service local que d'autres programmes (ou agents) utilisent.</td>
 </tr>
 <tr>
@@ -495,7 +500,7 @@ python memoryaicm_neutral.zip chat                     # autonome, hors ligne
 </tr>
 <tr>
 <td><code>memoryaicm/tools.py</code></td>
-<td>418</td>
+<td>487</td>
 <td>Protocole mémoire universel : les mêmes outils pour n'importe quel LLM.</td>
 </tr>
 </tbody>
@@ -1186,7 +1191,7 @@ différente ⇒ refus ; chaque vérification ⇒ <code>model.check</code>. Le ba
 <h2 id="10-protocole-universel-et-neutralite-llm-toolspy-toollooppy-llm">10. Protocole universel et neutralité LLM (<code>tools.py</code>, <code>toolloop.py</code>, <code>llm/</code>)</h2>
 <p>Voir <code>docs/PROTOCOL.md</code> pour le texte complet. Résumé :</p>
 <ul>
-<li><strong>Une source</strong> : <code>TOOL_SPECS</code> (11 outils, JSON Schema) ⇒ <code>as_mcp()</code>, <code>as_openai()</code> (= <code>as_ollama()</code>), <code>as_anthropic()</code>,
+<li><strong>Une source</strong> : <code>TOOL_SPECS</code> (13 outils, JSON Schema) ⇒ <code>as_mcp()</code>, <code>as_openai()</code> (= <code>as_ollama()</code>), <code>as_anthropic()</code>,
   <code>as_gemini()</code> (mots-clés non supportés retirés), <code>as_markdown()</code>. Copies profondes : un client ne modifie jamais la source.</li>
 <li><strong><code>PROTOCOL</code></strong> : consigne système (quand appeler quoi, verbatim, externe = donnée, oubli, étiquettes, ordre de confiance).
   <strong><code>TEXT_PROTOCOL</code></strong> : blocs <code>```memory {"name","arguments"} ```</code> pour un modèle sans appel d'outils ;
@@ -1332,17 +1337,63 @@ différente ⇒ refus ; chaque vérification ⇒ <code>model.check</code>. Le ba
 }
 </code></pre>
 <h4 id="memory_search"><code>memory_search</code></h4>
-<p>Recherche plein texte dans tout le journal (événements, faits, y compris désindexés ou oubliés).</p>
+<p>Recherche plein texte dans tout le journal (événements, faits, y compris désindexés ou oubliés). Rend le texte des événements trouvés ; au-delà de <code>chars</code> par événement la sortie renvoie vers memory_read, qui en donne l'intégral.</p>
 <pre><code class="language-json">{
   &quot;type&quot;: &quot;object&quot;,
   &quot;properties&quot;: {
     &quot;query&quot;: {
       &quot;type&quot;: &quot;string&quot;
+    },
+    &quot;chars&quot;: {
+      &quot;type&quot;: &quot;integer&quot;,
+      &quot;description&quot;: &quot;Caractères rendus par événement (défaut 2000 ; 0 = tout).&quot;,
+      &quot;minimum&quot;: 0
     }
   },
   &quot;required&quot;: [
     &quot;query&quot;
   ]
+}
+</code></pre>
+<h4 id="memory_read"><code>memory_read</code></h4>
+<p>Lit UN événement du journal en entier, sans aucune troncature — par son numéro (seq, donné par memory_search) ou son identifiant ev_…. C'est la garantie « 100 % » : ce que la mémoire a gardé, on peut le relire mot pour mot.</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;properties&quot;: {
+    &quot;seq&quot;: {
+      &quot;type&quot;: &quot;integer&quot;,
+      &quot;description&quot;: &quot;Numéro de l'événement (#123 dans memory_search).&quot;
+    },
+    &quot;event_id&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;description&quot;: &quot;Identifiant ev_… (alternative à seq).&quot;
+    }
+  }
+}
+</code></pre>
+<h4 id="memory_transcript"><code>memory_transcript</code></h4>
+<p>La conversation elle-même, archivée mot pour mot. AVEC user_text / assistant_text : archive l'échange intégralement dans le journal chaîné (aucune limite de taille, rien n'est résumé). SANS argument de texte : relit les derniers tours de la session. À utiliser quand l'utilisateur veut pouvoir retrouver plus tard ce qui a été dit exactement, pas seulement ce qui en a été retenu.</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;properties&quot;: {
+    &quot;user_text&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;description&quot;: &quot;Le message de l'utilisateur, verbatim.&quot;
+    },
+    &quot;assistant_text&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;description&quot;: &quot;La réponse, verbatim.&quot;
+    },
+    &quot;session&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;description&quot;: &quot;Session (défaut : la session courante).&quot;
+    },
+    &quot;n&quot;: {
+      &quot;type&quot;: &quot;integer&quot;,
+      &quot;description&quot;: &quot;Relecture : nombre de tours (défaut 20).&quot;,
+      &quot;minimum&quot;: 1
+    }
+  }
 }
 </code></pre>
 <h4 id="memory_status"><code>memory_status</code></h4>
@@ -1418,7 +1469,7 @@ différente ⇒ refus ; chaque vérification ⇒ <code>model.check</code>. Le ba
 <h2 id="11-interfaces">11. Interfaces</h2>
 <h3 id="111-ligne-de-commande-genere-depuis-python-m-memoryaicm-help">11.1 Ligne de commande (généré depuis <code>python -m memoryaicm --help</code>)</h3>
 <pre><code>usage: memoryaicm [-h] [--home HOME] [--backend BACKEND]
-                  {init,chat,say,ingest,forget,recall,sleep,review,show,search,rebuild,verify,bench,serve,mcp,hook,model,install,tools,protocol,agent}
+                  {init,chat,say,ingest,forget,recall,sleep,review,show,search,rebuild,verify,bench,export,backup,restore,erase,serve,mcp,hook,model,install,tools,protocol,agent}
                   ...
 
 CLI : python -m memoryaicm &lt;commande&gt;
@@ -1445,6 +1496,10 @@ CLI : python -m memoryaicm &lt;commande&gt;
   protocol [--text]            consigne système universelle (avec le protocole texte pour un modèle sans outils)
   agent [--provider openai|anthropic|text] [--base-url U] [--model M] [--say &quot;…&quot;]
                                n'importe quel LLM pilote la mémoire par ses outils (boucle d'outils générique)
+  export [--out FICHIER]       RGPD · droit d'accès et portabilité : tout le journal en JSONL revérifiable
+  backup --out FICHIER         sauvegarde chiffrée du journal (AES-256-GCM, clé propre au dossier : vault.key)
+  restore FICHIER [--key K]    restaure une sauvegarde dans un dossier mémoire vide, vérifie la chaîne, reconstruit l'index
+  erase --yes                  RGPD · droit à l'effacement : clé détruite, fichiers écrasés et supprimés, pierre tombale
 
 Autonomie : au démarrage, chaîne vérifiée et index reconstruit si besoin ; après N tours (25) le système
 dort seul ; à l'ouverture d'une session, s'il n'a pas dormi depuis 6 h, il dort d'abord.
@@ -1452,7 +1507,13 @@ Option globale : --home CHEMIN (ou MEMORYAICM_HOME),
                  --backend auto|stub|anthropic|openai|llamacpp|ollama|callable:module:fn|callable:http://…
 
 positional arguments:
-  {init,chat,say,ingest,forget,recall,sleep,review,show,search,rebuild,verify,bench,serve,mcp,hook,model,install,tools,protocol,agent}
+  {init,chat,say,ingest,forget,recall,sleep,review,show,search,rebuild,verify,bench,export,backup,restore,erase,serve,mcp,hook,model,install,tools,protocol,agent}
+    export              RGPD : droit d'accès et portabilité (JSONL
+                        revérifiable)
+    backup              sauvegarde chiffrée du journal (AES-256-GCM)
+    restore             restaure une sauvegarde chiffrée dans un dossier vide
+    erase               RGPD : droit à l'effacement (clé détruite, fichiers
+                        écrasés)
 
 options:
   -h, --help            show this help message and exit
@@ -1773,6 +1834,16 @@ SQLite refuse certains montages réseau/VM (« disk I/O error ») : mettre <code
 <td>INDEX : activation ACT-R · top-k sans dump · cascade de lignage · PROC séparées.</td>
 </tr>
 <tr>
+<td><code>test_journal_integrite.py</code></td>
+<td>3</td>
+<td>JOURNAL · la chaîne doit tenir quel que soit le TYPE de l'horodatage fourni. La colonne <code>ts</code> est REAL. Un appelant qui passe un entier (int(time.time()), une date analysée, une archive rejouée) faisait hacher « 1683553000 » puis relire « 1683553000.0 » : l'événement devenait invérifiable, et comme le journal est append-only, définitivement. Trouvé en rejouant LoCoMo avec les vraies dates des sessions (9 septembre 2026).</td>
+</tr>
+<tr>
+<td><code>test_lexical_idf.py</code></td>
+<td>4</td>
+<td>READ · pertinence lexicale pondérée par l'information (idf) et sémantique en RECOURS. Mesuré sur LoCoMo (10 conversations, 5 882 tours, 1 536 questions) : recouvrement plat + max(lex, sem) hit@10 = 0.553 hit@1 = 0.264 idf + sémantique en recours hit@10 = 0.607 hit@1 = 0.340 BM25 (référence 1994) hit@10 = 0.602 hit@1 = 0.298 Ces tests fixent les deux propriétés qui produisent l'écart, pour qu'elles ne repartent pas.</td>
+</tr>
+<tr>
 <td><code>test_log.py</code></td>
 <td>5</td>
 <td>JOURNAL : append-only · chaîne de hachage · plein texte · Log ⊇ Index (rebuild identique).</td>
@@ -1784,7 +1855,7 @@ SQLite refuse certains montages réseau/VM (« disk I/O error ») : mettre <code
 </tr>
 <tr>
 <td><code>test_neutral.py</code></td>
-<td>16</td>
+<td>18</td>
 <td>NEUTRALITÉ LLM : mêmes outils pour tout fournisseur · boucles d'outils (OpenAI, Anthropic, texte) · backends callable / HTTP · Claude sans SDK · CLI tools/protocol.</td>
 </tr>
 <tr>
@@ -1794,8 +1865,13 @@ SQLite refuse certains montages réseau/VM (« disk I/O error ») : mettre <code
 </tr>
 <tr>
 <td><code>test_policy.py</code></td>
-<td>10</td>
+<td>11</td>
 <td>WRITE : porte · durabilité · INFER · conflit/merge · renforcement · sensible · saillance.</td>
+</tr>
+<tr>
+<td><code>test_privacy.py</code></td>
+<td>10</td>
+<td>RGPD : export (accès, portabilité), backup/restore chiffrés, erase (effacement, crypto-shredding).</td>
 </tr>
 <tr>
 <td><code>test_sleep.py</code></td>
@@ -1803,8 +1879,13 @@ SQLite refuse certains montages réseau/VM (« disk I/O error ») : mettre <code
 <td>SLEEP : dedup · conflits · abstraction · élagage/ttl · compile → tests → promote</td>
 </tr>
 <tr>
+<td><code>test_transcript_integral.py</code></td>
+<td>5</td>
+<td>L'add-on Claude doit pouvoir relire MOT POUR MOT ce que la mémoire a gardé. Le journal conservait déjà tout, mais <code>memory_search</code> coupait sa sortie à 200 caractères : le lecteur ne voyait jamais plus de 200 caractères de ce qui était pourtant conservé — la mémoire était complète, la fenêtre ne l'était pas. <code>memory_read</code> rend un événement entier, et <code>memory_transcript</code> archive la conversation elle-même, sans plafond ni résumé.</td>
+</tr>
+<tr>
 <td><strong>total</strong></td>
-<td><strong>103</strong></td>
+<td><strong>128</strong></td>
 <td></td>
 </tr>
 </tbody>
@@ -2208,6 +2289,11 @@ Ollama, llama-server) par des serveurs HTTP locaux.</p>
 <td></td>
 </tr>
 <tr>
+<td><code>idf_min_facts</code></td>
+<td><code>12</code></td>
+<td></td>
+</tr>
+<tr>
 <td><code>session_summary_min_turns</code></td>
 <td><code>2</code></td>
 <td></td>
@@ -2287,7 +2373,7 @@ Ollama, llama-server) par des serveurs HTTP locaux.</p>
 </tbody>
 </table></div>
     </article>
-    <footer class="foot">memoryaicm v0.5.0 · docs/REFERENCE.md généré par scripts/gen_docs.py · page construite par scripts/build_reference_page.py · 2026-09-04</footer>
+    <footer class="foot">memoryaicm v0.6.0 · docs/REFERENCE.md généré par scripts/gen_docs.py · page construite par scripts/build_reference_page.py · 2026-10-05</footer>
   </div>
 </div>
 <script>

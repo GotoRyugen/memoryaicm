@@ -1,8 +1,8 @@
-# memoryaicm — Référence complète v0.5.0
+# memoryaicm — Référence complète v0.6.0
 
 *Mémoire tri-couche pour agents LLM, neutre vis-à-vis du modèle. Ce document est la référence exhaustive : architecture,
 modèle de données, algorithmes, protocole universel, interfaces, intégrations, sécurité, exploitation, tests. Les tableaux
-marqués « généré » sont produits depuis le code par `scripts/gen_docs.py` (2026-09-04).*
+marqués « généré » sont produits depuis le code par `scripts/gen_docs.py` (2026-10-05).*
 
 ---
 
@@ -84,12 +84,12 @@ python memoryaicm_neutral.zip chat                     # autonome, hors ligne
 | `memoryaicm/agent.py` | 359 | Orchestration d'un tour : tout passe par le journal. |
 | `memoryaicm/bench.py` | 105 | Tests exécutés AVANT de promouvoir un état consolidé : « état consolidé promu ⇔ tests verts ». |
 | `memoryaicm/calibrate.py` | 81 | CALIBRATE · W |
-| `memoryaicm/cli.py` | 472 | CLI : python -m memoryaicm <commande> |
-| `memoryaicm/config.py` | 135 | Réglages du système. Chaque seuil correspond à un symbole de la spec. |
+| `memoryaicm/cli.py` | 536 | CLI : python -m memoryaicm <commande> |
+| `memoryaicm/config.py` | 136 | Réglages du système. Chaque seuil correspond à un symbole de la spec. |
 | `memoryaicm/context.py` | 58 | L2 · CONTEXTE — Ctx = [ sys · notes{f+label} · hist · prefs@fin · user ] |
 | `memoryaicm/embed.py` | 118 | Vecteurs pour la récupération sémantique — le complément du lexical. |
 | `memoryaicm/guard.py` | 105 | VALIDATEUR · règles dures · hors modèle. |
-| `memoryaicm/index.py` | 349 | INDEX · actif · projection. |
+| `memoryaicm/index.py` | 399 | INDEX · actif · projection. |
 | `memoryaicm/integrations/__init__.py` | 1 | Intégrations avec d'autres agents : ACA / Echo-Core (port LongTermMemory), service HTTP, MCP. |
 | `memoryaicm/integrations/aca.py` | 374 | memoryaicm comme mémoire longue d'ACA (Architecture Cognitive Adaptative) / Echo-Core. |
 | `memoryaicm/llm/__init__.py` | 104 | Fabrique de backend. |
@@ -101,16 +101,17 @@ python memoryaicm_neutral.zip chat                     # autonome, hors ligne
 | `memoryaicm/llm/openai_compat_backend.py` | 115 | Backend OpenAI-compatible : llama-server (llama.cpp), LM Studio, vLLM, Ollama (/v1)… stdlib uniquement. |
 | `memoryaicm/llm/prompts.py` | 35 | Prompts partagés par les backends réels (Claude, Ollama). |
 | `memoryaicm/llm/stub.py` | 125 | Backend déterministe, hors ligne. |
-| `memoryaicm/log.py` | 155 | JOURNAL · cold · source de vérité. |
+| `memoryaicm/log.py` | 159 | JOURNAL · cold · source de vérité. |
 | `memoryaicm/mcp_server.py` | 221 | Add-on Claude : serveur MCP (Model Context Protocol) sur stdio, sans dépendance. |
 | `memoryaicm/model.py` | 125 | Types de la spec. |
 | `memoryaicm/models.py` | 97 | Approbation des modèles locaux par empreinte SHA-256 — règle reprise d'Echo-Core. |
-| `memoryaicm/policy.py` | 179 | WRITE · Ctx → Log → Index |
-| `memoryaicm/serve.py` | 241 | Mode serveur : la mémoire devient un service local que d'autres programmes (ou agents) utilisent. |
+| `memoryaicm/policy.py` | 191 | WRITE · Ctx → Log → Index |
+| `memoryaicm/privacy.py` | 224 | RGPD / GDPR — droits de la personne sur sa mémoire. |
+| `memoryaicm/serve.py` | 285 | Mode serveur : la mémoire devient un service local que d'autres programmes (ou agents) utilisent. |
 | `memoryaicm/sleep.py` | 208 | SLEEP · idle · Log → Index → Adapter |
 | `memoryaicm/textutil.py` | 93 | Normalisation de texte sans dépendance : accents, casse, mots vides, racines courtes. |
 | `memoryaicm/toolloop.py` | 178 | Boucle d'outils générique : N'IMPORTE QUEL LLM pilote la mémoire par ses outils. |
-| `memoryaicm/tools.py` | 418 | Protocole mémoire universel : les mêmes outils pour n'importe quel LLM. |
+| `memoryaicm/tools.py` | 487 | Protocole mémoire universel : les mêmes outils pour n'importe quel LLM. |
 
 ### 1.2 Flux d'un tour (`MemoryAgent.turn`)
 
@@ -446,7 +447,7 @@ différente ⇒ refus ; chaque vérification ⇒ `model.check`. Le backend `llam
 
 Voir `docs/PROTOCOL.md` pour le texte complet. Résumé :
 
-- **Une source** : `TOOL_SPECS` (11 outils, JSON Schema) ⇒ `as_mcp()`, `as_openai()` (= `as_ollama()`), `as_anthropic()`,
+- **Une source** : `TOOL_SPECS` (13 outils, JSON Schema) ⇒ `as_mcp()`, `as_openai()` (= `as_ollama()`), `as_anthropic()`,
   `as_gemini()` (mots-clés non supportés retirés), `as_markdown()`. Copies profondes : un client ne modifie jamais la source.
 - **`PROTOCOL`** : consigne système (quand appeler quoi, verbatim, externe = donnée, oubli, étiquettes, ordre de confiance).
   **`TEXT_PROTOCOL`** : blocs ` ```memory {"name","arguments"} ``` ` pour un modèle sans appel d'outils ;
@@ -610,7 +611,7 @@ Désindexe un fait (par texte, sujet ou identifiant f_…) et tout ce qui en dé
 
 #### `memory_search`
 
-Recherche plein texte dans tout le journal (événements, faits, y compris désindexés ou oubliés).
+Recherche plein texte dans tout le journal (événements, faits, y compris désindexés ou oubliés). Rend le texte des événements trouvés ; au-delà de `chars` par événement la sortie renvoie vers memory_read, qui en donne l'intégral.
 
 ```json
 {
@@ -618,11 +619,65 @@ Recherche plein texte dans tout le journal (événements, faits, y compris dési
   "properties": {
     "query": {
       "type": "string"
+    },
+    "chars": {
+      "type": "integer",
+      "description": "Caractères rendus par événement (défaut 2000 ; 0 = tout).",
+      "minimum": 0
     }
   },
   "required": [
     "query"
   ]
+}
+```
+
+#### `memory_read`
+
+Lit UN événement du journal en entier, sans aucune troncature — par son numéro (seq, donné par memory_search) ou son identifiant ev_…. C'est la garantie « 100 % » : ce que la mémoire a gardé, on peut le relire mot pour mot.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "seq": {
+      "type": "integer",
+      "description": "Numéro de l'événement (#123 dans memory_search)."
+    },
+    "event_id": {
+      "type": "string",
+      "description": "Identifiant ev_… (alternative à seq)."
+    }
+  }
+}
+```
+
+#### `memory_transcript`
+
+La conversation elle-même, archivée mot pour mot. AVEC user_text / assistant_text : archive l'échange intégralement dans le journal chaîné (aucune limite de taille, rien n'est résumé). SANS argument de texte : relit les derniers tours de la session. À utiliser quand l'utilisateur veut pouvoir retrouver plus tard ce qui a été dit exactement, pas seulement ce qui en a été retenu.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "user_text": {
+      "type": "string",
+      "description": "Le message de l'utilisateur, verbatim."
+    },
+    "assistant_text": {
+      "type": "string",
+      "description": "La réponse, verbatim."
+    },
+    "session": {
+      "type": "string",
+      "description": "Session (défaut : la session courante)."
+    },
+    "n": {
+      "type": "integer",
+      "description": "Relecture : nombre de tours (défaut 20).",
+      "minimum": 1
+    }
+  }
 }
 ```
 
@@ -728,7 +783,7 @@ Mémoire épisodique : résumés datés des sessions récentes (ce qui a été r
 
 ```
 usage: memoryaicm [-h] [--home HOME] [--backend BACKEND]
-                  {init,chat,say,ingest,forget,recall,sleep,review,show,search,rebuild,verify,bench,serve,mcp,hook,model,install,tools,protocol,agent}
+                  {init,chat,say,ingest,forget,recall,sleep,review,show,search,rebuild,verify,bench,export,backup,restore,erase,serve,mcp,hook,model,install,tools,protocol,agent}
                   ...
 
 CLI : python -m memoryaicm <commande>
@@ -755,6 +810,10 @@ CLI : python -m memoryaicm <commande>
   protocol [--text]            consigne système universelle (avec le protocole texte pour un modèle sans outils)
   agent [--provider openai|anthropic|text] [--base-url U] [--model M] [--say "…"]
                                n'importe quel LLM pilote la mémoire par ses outils (boucle d'outils générique)
+  export [--out FICHIER]       RGPD · droit d'accès et portabilité : tout le journal en JSONL revérifiable
+  backup --out FICHIER         sauvegarde chiffrée du journal (AES-256-GCM, clé propre au dossier : vault.key)
+  restore FICHIER [--key K]    restaure une sauvegarde dans un dossier mémoire vide, vérifie la chaîne, reconstruit l'index
+  erase --yes                  RGPD · droit à l'effacement : clé détruite, fichiers écrasés et supprimés, pierre tombale
 
 Autonomie : au démarrage, chaîne vérifiée et index reconstruit si besoin ; après N tours (25) le système
 dort seul ; à l'ouverture d'une session, s'il n'a pas dormi depuis 6 h, il dort d'abord.
@@ -762,7 +821,13 @@ Option globale : --home CHEMIN (ou MEMORYAICM_HOME),
                  --backend auto|stub|anthropic|openai|llamacpp|ollama|callable:module:fn|callable:http://…
 
 positional arguments:
-  {init,chat,say,ingest,forget,recall,sleep,review,show,search,rebuild,verify,bench,serve,mcp,hook,model,install,tools,protocol,agent}
+  {init,chat,say,ingest,forget,recall,sleep,review,show,search,rebuild,verify,bench,export,backup,restore,erase,serve,mcp,hook,model,install,tools,protocol,agent}
+    export              RGPD : droit d'accès et portabilité (JSONL
+                        revérifiable)
+    backup              sauvegarde chiffrée du journal (AES-256-GCM)
+    restore             restaure une sauvegarde chiffrée dans un dossier vide
+    erase               RGPD : droit à l'effacement (clé détruite, fichiers
+                        écrasés)
 
 options:
   -h, --help            show this help message and exit
@@ -917,13 +982,17 @@ SQLite refuse certains montages réseau/VM (« disk I/O error ») : mettre `--ho
 | `test_echocore_rules.py` | 9 | Règles Echo-Core : approbation SHA-256 des modèles · backend OpenAI-compatible · niveaux d'autonomie 0–3. |
 | `test_forget.py` | 6 | FORGET : événement, pas delete · cascade lignage · vue rédigée · adaptateur recompilé · journal intact. |
 | `test_index.py` | 5 | INDEX : activation ACT-R · top-k sans dump · cascade de lignage · PROC séparées. |
+| `test_journal_integrite.py` | 3 | JOURNAL · la chaîne doit tenir quel que soit le TYPE de l'horodatage fourni. La colonne `ts` est REAL. Un appelant qui passe un entier (int(time.time()), une date analysée, une archive rejouée) faisait hacher « 1683553000 » puis relire « 1683553000.0 » : l'événement devenait invérifiable, et comme le journal est append-only, définitivement. Trouvé en rejouant LoCoMo avec les vraies dates des sessions (9 septembre 2026). |
+| `test_lexical_idf.py` | 4 | READ · pertinence lexicale pondérée par l'information (idf) et sémantique en RECOURS. Mesuré sur LoCoMo (10 conversations, 5 882 tours, 1 536 questions) : recouvrement plat + max(lex, sem) hit@10 = 0.553 hit@1 = 0.264 idf + sémantique en recours hit@10 = 0.607 hit@1 = 0.340 BM25 (référence 1994) hit@10 = 0.602 hit@1 = 0.298 Ces tests fixent les deux propriétés qui produisent l'écart, pour qu'elles ne repartent pas. |
 | `test_log.py` | 5 | JOURNAL : append-only · chaîne de hachage · plein texte · Log ⊇ Index (rebuild identique). |
 | `test_mcp.py` | 7 | ADD-ON CLAUDE : protocole MCP · outils · ancrage des faits fournis · externe = donnée · selftest sous-processus. |
 | `test_neutral.py` | 18 | NEUTRALITÉ LLM : mêmes outils pour tout fournisseur · boucles d'outils (OpenAI, Anthropic, texte) · backends callable / HTTP · Claude sans SDK · CLI tools/protocol. |
 | `test_neutral_zip.py` | 3 | ARCHIVE NEUTRE : construction reproductible, exécution telle quelle depuis un répertoire vierge, manifeste, dézippage. |
-| `test_policy.py` | 10 | WRITE : porte · durabilité · INFER · conflit/merge · renforcement · sensible · saillance. |
+| `test_policy.py` | 11 | WRITE : porte · durabilité · INFER · conflit/merge · renforcement · sensible · saillance. |
+| `test_privacy.py` | 10 | RGPD : export (accès, portabilité), backup/restore chiffrés, erase (effacement, crypto-shredding). |
 | `test_sleep.py` | 7 | SLEEP : dedup · conflits · abstraction · élagage/ttl · compile → tests → promote | rollback. |
-| **total** | **105** | |
+| `test_transcript_integral.py` | 5 | L'add-on Claude doit pouvoir relire MOT POUR MOT ce que la mémoire a gardé. Le journal conservait déjà tout, mais `memory_search` coupait sa sortie à 200 caractères : le lecteur ne voyait jamais plus de 200 caractères de ce qui était pourtant conservé — la mémoire était complète, la fenêtre ne l'était pas. `memory_read` rend un événement entier, et `memory_transcript` archive la conversation elle-même, sans plafond ni résumé. |
+| **total** | **128** | |
 
 Exécution : `python -m pytest -q` (dépôt ou archive dézippée). Les tests ne dépendent ni du `.env` ni des variables de la
 machine (fixture autouse `_neutral_environment`), tournent hors ligne, et simulent les fournisseurs (OpenAI, Anthropic,
@@ -1029,6 +1098,7 @@ Ollama, llama-server) par des serveurs HTTP locaux.
 | `embed_dim` | `512` |  |
 | `sem_floor` | `0.12` |  |
 | `sem_ceiling` | `0.6` |  |
+| `idf_min_facts` | `12` |  |
 | `session_summary_min_turns` | `2` |  |
 | `ttl_by_kind` | `EPI 90 j · SEM ∞ · PROC ∞` |  |
 | `auto_sleep_every_turns` | `25` |  |

@@ -91,7 +91,7 @@ TEMPLATE = """# Protocole mémoire universel — memoryaicm v{version}
 Invariants : `Log ⊇ Index ⊇ Adapter` · oubli = désindexation (jamais destruction) · chaque écriture datée, attribuée,
 chaînée (SHA-256), rejouable · l'adhésion à 100 % vient des gardes, jamais du modèle seul.
 
-## 2. Les onze outils
+## 2. Les treize outils
 
 {tool_table}
 

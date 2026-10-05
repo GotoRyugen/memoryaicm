@@ -22,6 +22,10 @@
   protocol [--text]            consigne système universelle (avec le protocole texte pour un modèle sans outils)
   agent [--provider openai|anthropic|text] [--base-url U] [--model M] [--say "…"]
                                n'importe quel LLM pilote la mémoire par ses outils (boucle d'outils générique)
+  export [--out FICHIER]       RGPD · droit d'accès et portabilité : tout le journal en JSONL revérifiable
+  backup --out FICHIER         sauvegarde chiffrée du journal (AES-256-GCM, clé propre au dossier : vault.key)
+  restore FICHIER [--key K]    restaure une sauvegarde dans un dossier mémoire vide, vérifie la chaîne, reconstruit l'index
+  erase --yes                  RGPD · droit à l'effacement : clé détruite, fichiers écrasés et supprimés, pierre tombale
 
 Autonomie : au démarrage, chaîne vérifiée et index reconstruit si besoin ; après N tours (25) le système
 dort seul ; à l'ouverture d'une session, s'il n'a pas dormi depuis 6 h, il dort d'abord.
@@ -41,6 +45,7 @@ from . import model as M
 from .agent import MemoryAgent, PolicyRefused
 from .bench import run_all
 from .config import Settings, load_dotenv
+from .log import Journal
 
 
 def _utf8_console() -> None:
@@ -51,14 +56,18 @@ def _utf8_console() -> None:
             pass
 
 
-def _agent(args) -> MemoryAgent:
+def _settings(args) -> Settings:
     load_dotenv()
     s = Settings()
     if args.home:
         s.root = Path(args.home)
     if args.backend:
         s.backend = args.backend
-    return MemoryAgent(s)
+    return s
+
+
+def _agent(args) -> MemoryAgent:
+    return MemoryAgent(_settings(args))
 
 
 def _print_turn(res) -> None:
@@ -397,6 +406,57 @@ def cmd_agent(args) -> None:
     loop.close()
 
 
+def cmd_export(args) -> None:
+    from . import privacy
+    s = _settings(args)
+    out = Path(args.out) if args.out else Path(f"memoryaicm-export-{time.strftime('%Y%m%d-%H%M%S')}.jsonl")
+    j = Journal(s.journal_path)
+    try:
+        r = privacy.export_jsonl(j, out)
+    finally:
+        j.close()
+    print(f"export : {r['events']} événements → {r['path']} ({r['bytes']} octets)")
+
+
+def cmd_backup(args) -> None:
+    from . import privacy
+    r = privacy.backup(_settings(args), Path(args.out))
+    print(f"sauvegarde chiffrée : {r['path']} ({r['bytes']} octets) — clé : {r['key']} (à garder hors de la sauvegarde)")
+
+
+def cmd_restore(args) -> None:
+    from . import privacy
+    s = _settings(args)
+    key = bytes.fromhex(args.key) if args.key else None
+    r = privacy.restore(s, Path(args.file), key=key)
+    print(f"restauré : {r['events']} événements — {r['verify']}")
+    a = MemoryAgent(s)
+    try:
+        a.index.rebuild()
+        print(f"index reconstruit : {len(a.index.all_facts(on_only=True))} faits actifs")
+    finally:
+        a.close()
+
+
+def cmd_erase(args) -> None:
+    from . import privacy
+    s = _settings(args)
+    try:
+        r = privacy.erase(s, confirm=args.yes)
+    except privacy.PrivacyError as e:
+        print(f"refusé : {e}")
+        sys.exit(2)
+    if not r["existed"]:
+        print(f"rien à effacer : {r['root']} n'existe pas")
+        return
+    print(f"effacé : {r['files']} fichiers, {r['bytes']} octets écrasés — {r['root']} — pierre tombale ERASED ({r['erased_at']})")
+    if r["locked"]:
+        print("fichiers verrouillés (fermer Claude Desktop / le serveur, puis relancer erase --yes) :")
+        for f in r["locked"]:
+            print("  " + f)
+        sys.exit(1)
+
+
 def cmd_bench(args) -> None:
     a = _agent(args)
     ok, rep = run_all(a.journal, a.index, a.backend, a.s)
@@ -452,6 +512,10 @@ def main(argv: list[str] | None = None) -> None:
     sub.add_parser("rebuild").set_defaults(fn=cmd_rebuild)
     sub.add_parser("verify").set_defaults(fn=cmd_verify)
     sub.add_parser("bench").set_defaults(fn=cmd_bench)
+    c = sub.add_parser("export", help="RGPD : droit d'accès et portabilité (JSONL revérifiable)"); c.add_argument("--out"); c.set_defaults(fn=cmd_export)
+    c = sub.add_parser("backup", help="sauvegarde chiffrée du journal (AES-256-GCM)"); c.add_argument("--out", required=True); c.set_defaults(fn=cmd_backup)
+    c = sub.add_parser("restore", help="restaure une sauvegarde chiffrée dans un dossier vide"); c.add_argument("file"); c.add_argument("--key", help="clé en hexadécimal si vault.key n'est pas dans le dossier cible"); c.set_defaults(fn=cmd_restore)
+    c = sub.add_parser("erase", help="RGPD : droit à l'effacement (clé détruite, fichiers écrasés)"); c.add_argument("--yes", action="store_true", help="confirme l'effacement définitif"); c.set_defaults(fn=cmd_erase)
     c = sub.add_parser("serve"); c.add_argument("--host"); c.add_argument("--port", type=int); c.set_defaults(fn=cmd_serve)
     c = sub.add_parser("mcp"); c.add_argument("--selftest", action="store_true"); c.set_defaults(fn=cmd_mcp)
     c = sub.add_parser("hook"); c.add_argument("what", choices=["prompt"]); c.set_defaults(fn=cmd_hook)

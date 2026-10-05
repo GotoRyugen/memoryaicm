@@ -1,0 +1,80 @@
+LoCoMo : 10 conversations, 5882 tours, 1536 questions (categorie 5 « adversarial » exclue)
+  conv-26: 150 questions · 419 faits (0 redites, 0 fusions, refus aucun) · ingestion 16.6s
+      echos      hit@5 0.440  hit@10 0.540  hit@30 0.667  rec@10 0.489
+      rel_seule  hit@5 0.373  hit@10 0.453  hit@30 0.600  rec@10 0.418
+      cidf_repli hit@5 0.533  hit@10 0.593  hit@30 0.680  rec@10 0.546
+      cidf_r_a15 hit@5 0.553  hit@10 0.593  hit@30 0.687  rec@10 0.546
+      bm25       hit@5 0.480  hit@10 0.587  hit@30 0.660  rec@10 0.536
+  conv-30: 81 questions · 367 faits (0 redites, 0 fusions, refus {'gabarit / valeur manquante': 2}) · ingestion 12.2s
+      echos      hit@5 0.407  hit@10 0.531  hit@30 0.642  rec@10 0.516
+      rel_seule  hit@5 0.481  hit@10 0.556  hit@30 0.716  rec@10 0.518
+      cidf_repli hit@5 0.519  hit@10 0.580  hit@30 0.654  rec@10 0.558
+      cidf_r_a15 hit@5 0.543  hit@10 0.605  hit@30 0.667  rec@10 0.563
+      bm25       hit@5 0.519  hit@10 0.580  hit@30 0.679  rec@10 0.551
+  conv-41: 152 questions · 659 faits (0 redites, 0 fusions, refus {'gabarit / valeur manquante': 4}) · ingestion 38.7s
+      echos      hit@5 0.474  hit@10 0.559  hit@30 0.651  rec@10 0.499
+      rel_seule  hit@5 0.474  hit@10 0.553  hit@30 0.651  rec@10 0.498
+      cidf_repli hit@5 0.539  hit@10 0.618  hit@30 0.711  rec@10 0.553
+      cidf_r_a15 hit@5 0.553  hit@10 0.632  hit@30 0.717  rec@10 0.563
+      bm25       hit@5 0.546  hit@10 0.612  hit@30 0.678  rec@10 0.546
+  conv-42: 199 questions · 629 faits (0 redites, 0 fusions, refus aucun) · ingestion 32.4s
+      echos      hit@5 0.432  hit@10 0.508  hit@30 0.658  rec@10 0.460
+      rel_seule  hit@5 0.427  hit@10 0.518  hit@30 0.633  rec@10 0.466
+      cidf_repli hit@5 0.503  hit@10 0.573  hit@30 0.683  rec@10 0.528
+      cidf_r_a15 hit@5 0.538  hit@10 0.598  hit@30 0.709  rec@10 0.548
+      bm25       hit@5 0.523  hit@10 0.608  hit@30 0.709  rec@10 0.543
+  conv-43: 178 questions · 680 faits (0 redites, 0 fusions, refus aucun) · ingestion 38.9s
+      echos      hit@5 0.545  hit@10 0.624  hit@30 0.719  rec@10 0.551
+      rel_seule  hit@5 0.551  hit@10 0.629  hit@30 0.742  rec@10 0.549
+      cidf_repli hit@5 0.556  hit@10 0.663  hit@30 0.753  rec@10 0.596
+      cidf_r_a15 hit@5 0.556  hit@10 0.663  hit@30 0.781  rec@10 0.601
+      bm25       hit@5 0.556  hit@10 0.652  hit@30 0.792  rec@10 0.592
+  conv-44: 123 questions · 674 faits (0 redites, 0 fusions, refus {'gabarit / valeur manquante': 1}) · ingestion 37.3s
+      echos      hit@5 0.480  hit@10 0.545  hit@30 0.626  rec@10 0.479
+      rel_seule  hit@5 0.480  hit@10 0.569  hit@30 0.642  rec@10 0.498
+      cidf_repli hit@5 0.488  hit@10 0.569  hit@30 0.659  rec@10 0.502
+      cidf_r_a15 hit@5 0.504  hit@10 0.577  hit@30 0.707  rec@10 0.510
+      bm25       hit@5 0.480  hit@10 0.569  hit@30 0.691  rec@10 0.509
+  conv-47: 150 questions · 689 faits (0 redites, 0 fusions, refus aucun) · ingestion 38.8s
+      echos      hit@5 0.447  hit@10 0.513  hit@30 0.660  rec@10 0.474
+      rel_seule  hit@5 0.427  hit@10 0.493  hit@30 0.627  rec@10 0.452
+      cidf_repli hit@5 0.507  hit@10 0.580  hit@30 0.680  rec@10 0.537
+      cidf_r_a15 hit@5 0.500  hit@10 0.580  hit@30 0.727  rec@10 0.535
+      bm25       hit@5 0.480  hit@10 0.580  hit@30 0.707  rec@10 0.529
+  conv-48: 191 questions · 677 faits (0 redites, 0 fusions, refus {'gabarit / valeur manquante': 4}) · ingestion 37.0s
+      echos      hit@5 0.503  hit@10 0.571  hit@30 0.681  rec@10 0.492
+      rel_seule  hit@5 0.513  hit@10 0.613  hit@30 0.717  rec@10 0.536
+      cidf_repli hit@5 0.545  hit@10 0.628  hit@30 0.728  rec@10 0.548
+      cidf_r_a15 hit@5 0.576  hit@10 0.654  hit@30 0.759  rec@10 0.581
+      bm25       hit@5 0.560  hit@10 0.639  hit@30 0.759  rec@10 0.570
+  conv-49: 156 questions · 505 faits (0 redites, 0 fusions, refus {'gabarit / valeur manquante': 4}) · ingestion 21.6s
+      echos      hit@5 0.526  hit@10 0.609  hit@30 0.744  rec@10 0.500
+      rel_seule  hit@5 0.519  hit@10 0.609  hit@30 0.731  rec@10 0.508
+      cidf_repli hit@5 0.551  hit@10 0.647  hit@30 0.750  rec@10 0.536
+      cidf_r_a15 hit@5 0.571  hit@10 0.641  hit@30 0.782  rec@10 0.531
+      bm25       hit@5 0.545  hit@10 0.628  hit@30 0.782  rec@10 0.533
+  conv-50: 156 questions · 567 faits (0 redites, 0 fusions, refus {'gabarit / valeur manquante': 1}) · ingestion 29.6s
+      echos      hit@5 0.436  hit@10 0.519  hit@30 0.692  rec@10 0.456
+      rel_seule  hit@5 0.455  hit@10 0.506  hit@30 0.641  rec@10 0.442
+      cidf_repli hit@5 0.526  hit@10 0.596  hit@30 0.744  rec@10 0.544
+      cidf_r_a15 hit@5 0.519  hit@10 0.583  hit@30 0.737  rec@10 0.531
+      bm25       hit@5 0.455  hit@10 0.532  hit@30 0.699  rec@10 0.481
+
+=== AGREGE ===
+10 conversations · 1536 questions
+   k       echos   rel_seule  cidf_repli  cidf_r_a15        bm25     (hit@k)
+   1       0.264       0.260       0.340       0.347       0.298
+   3       0.404       0.401       0.473       0.486       0.461
+   5       0.473       0.471       0.528       0.543       0.517
+   8       0.528       0.523       0.572       0.593       0.577
+  10       0.553       0.551       0.607       0.615       0.602
+  20       0.624       0.632       0.674       0.692       0.674
+  30       0.677       0.670       0.708       0.732       0.720
+
+par categorie (hit@10) — 1 multi-saut · 2 temporel · 3 ouvert · 4 simple
+   cat 1 : 0.447  (282 questions)
+   cat 2 : 0.579  (321 questions)
+   cat 3 : 0.370  (92 questions)
+   cat 4 : 0.599  (841 questions)
+
+ecrit : resultats_locomo.json

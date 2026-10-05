@@ -1,0 +1,58 @@
+  conv 1/10 · 419 faits · Q cumulées=149
+  conv 2/10 · 369 faits · Q cumulées=230
+  conv 3/10 · 663 faits · Q cumulées=382
+  conv 4/10 · 629 faits · Q cumulées=581
+  conv 5/10 · 680 faits · Q cumulées=759
+  conv 6/10 · 675 faits · Q cumulées=882
+  conv 7/10 · 689 faits · Q cumulées=1032
+  conv 8/10 · 681 faits · Q cumulées=1223
+  conv 9/10 · 509 faits · Q cumulées=1376
+  conv 10/10 · 568 faits · Q cumulées=1531
+{
+  "questions": 1531,
+  "conversations": 10,
+  "hit_echos": {
+    "1": 0.328,
+    "3": 0.464,
+    "5": 0.526,
+    "10": 0.599,
+    "20": 0.658,
+    "30": 0.707
+  },
+  "hit_bm25": {
+    "1": 0.253,
+    "3": 0.407,
+    "5": 0.472,
+    "10": 0.572,
+    "20": 0.66,
+    "30": 0.702
+  },
+  "par_categorie": {
+    "multi-saut": {
+      "hit10": 0.498,
+      "n": 281
+    },
+    "temporel": {
+      "hit10": 0.65,
+      "n": 320
+    },
+    "ouvert/bon-sens": {
+      "hit10": 0.337,
+      "n": 89
+    },
+    "fait-simple": {
+      "hit10": 0.641,
+      "n": 841
+    }
+  },
+  "latence_ms": {
+    "mediane": 85.1,
+    "p90": 91.5
+  },
+  "faits_par_conv": {
+    "min": 369,
+    "max": 689,
+    "median": 646
+  },
+  "secondes": 137.5
+}

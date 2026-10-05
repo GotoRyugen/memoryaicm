@@ -1,0 +1,39 @@
+# secrets et données locales — jamais dans le dépôt
+.env
+data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.key
+install.log
+repair.log
+check-mcp.log
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# sauvegardes et brouillons locaux
+*.bak-*
+_to_delete/
+Claude outputs/
+
+# jeu de données LoCoMo (licence tierce, à télécharger : voir bench/locomo/README.md)
+bench/locomo/locomo10.json
+bench/locomo/mem/
+bench/locomo/phaseB.log
+bench/locomo/resultats_locomo_*.json
+bench/locomo/resultats_phaseB.json
+bench/locomo/_verif/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

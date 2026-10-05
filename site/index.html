@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="memoryaicm : mémoire locale, auditable et RGPD pour agents LLM. Journal append-only chaîné SHA-256, index ACT-R, validateur hors modèle. Add-on Claude Desktop, Ollama, OpenAI, Gemini.">
+<title>memoryaicm</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,700;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : une colonne de lecture (72ch) sur un fond papier froid ; le journal chaîné est le motif récurrent
+   (bandeau mono, hachages tronqués). Accent pétrole, jamais plus d'un accent par bloc. */
+:root {
+  --bg: #f2f4f6;
+  --bg-2: #e7ebef;
+  --paper: #ffffff;
+  --fg: #16202a;
+  --fg-2: #4b5864;
+  --line: #cfd6dd;
+  --accent: #0f6b66;
+  --accent-ink: #ffffff;
+  --accent-soft: #d9ece9;
+  --mono-bg: #1b262f;
+  --mono-fg: #d8e1e8;
+  --mono-dim: #7f919f;
+  --display: "Spectral", Georgia, "Times New Roman", serif;
+  --body: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1518; --bg-2: #141c20; --paper: #182125; --fg: #e4eaee; --fg-2: #9fb0ba; --line: #2b383f;
+    --accent: #4fb8b0; --accent-ink: #0b1416; --accent-soft: #163a38; --mono-bg: #0a0f12; --mono-fg: #cfd9e0; --mono-dim: #6c7e8a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1518; --bg-2: #141c20; --paper: #182125; --fg: #e4eaee; --fg-2: #9fb0ba; --line: #2b383f;
+  --accent: #4fb8b0; --accent-ink: #0b1416; --accent-soft: #163a38; --mono-bg: #0a0f12; --mono-fg: #cfd9e0; --mono-dim: #6c7e8a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.55; margin: 0; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 20px; padding-block: 0; }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.12; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.2rem, 5.2vw, 3.6rem); letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.6rem, 3.2vw, 2.2rem); margin-bottom: 0.35em; }
+h3 { font-size: 1.2rem; font-weight: 700; }
+p { margin: 0; }
+.lede { font-size: 1.15rem; color: var(--fg-2); max-width: 62ch; }
+.eyebrow { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.9rem; }
+section { padding-block: 4.2rem; border-top: 1px solid var(--line); }
+section > .wrap > p { max-width: 66ch; }
+.stack { display: grid; gap: 1.2rem; }
+code, pre { font-family: var(--mono); }
+code { background: var(--bg-2); padding: 0.1em 0.4em; border-radius: 4px; font-size: 0.92em; }
+pre { margin: 0; }
+
+/* en-tête */
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 0.8rem; flex-wrap: wrap; }
+.brand { font-family: var(--mono); font-weight: 500; font-size: 1.02rem; color: var(--fg); text-decoration: none; }
+.brand small { color: var(--fg-2); font-weight: 400; margin-left: 0.6rem; }
+nav { display: flex; gap: 1.1rem; flex-wrap: wrap; font-size: 0.92rem; }
+nav a { color: var(--fg-2); text-decoration: none; }
+nav a:hover { color: var(--accent); }
+
+/* héros */
+.hero { padding-block: 4.5rem 3.5rem; border-top: 0; }
+.hero .wrap { display: grid; gap: 2.4rem; grid-template-columns: 1.1fr 0.9fr; align-items: start; }
+.hero .copy { display: grid; gap: 1.3rem; min-width: 0; }
+.cta { display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; }
+.btn { display: inline-block; padding: 0.7rem 1.15rem; border-radius: 6px; font-weight: 600; text-decoration: none; border: 1px solid var(--accent); font-size: 0.98rem; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.ghost { color: var(--accent); background: transparent; }
+.install { display: flex; align-items: center; gap: 0.6rem; background: var(--mono-bg); color: var(--mono-fg); border-radius: 8px; padding: 0.75rem 0.9rem; font-family: var(--mono); font-size: 0.95rem; min-width: 0; }
+.install code { background: transparent; color: inherit; padding: 0; overflow-x: auto; white-space: nowrap; flex: 1; }
+.install .dim { color: var(--mono-dim); }
+.copybtn { background: transparent; color: var(--mono-dim); border: 1px solid var(--mono-dim); border-radius: 4px; font-family: var(--mono); font-size: 0.78rem; padding: 0.25rem 0.55rem; cursor: pointer; flex-shrink: 0; }
+.copybtn:hover { color: var(--mono-fg); border-color: var(--mono-fg); }
+
+/* journal (motif) */
+.ledger { background: var(--mono-bg); color: var(--mono-fg); border-radius: 10px; padding: 1rem 1.1rem; font-family: var(--mono); font-size: 0.78rem; line-height: 1.5; overflow-x: auto; min-width: 0; }
+.ledger .hd { color: var(--mono-dim); border-bottom: 1px solid var(--mono-dim); padding-bottom: 0.4rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; gap: 1rem; white-space: nowrap; }
+.ledger .row { display: grid; grid-template-columns: 5.2em 6.5em 1fr; gap: 0.8em; padding: 0.3rem 0; border-bottom: 1px dashed color-mix(in srgb, var(--mono-dim) 40%, transparent); white-space: nowrap; }
+.ledger .row:last-child { border-bottom: 0; }
+.ledger .t { color: var(--mono-dim); }
+.ledger .k { color: var(--accent); }
+.ledger .h { color: var(--mono-dim); }
+.ledger .row.off .p { text-decoration: line-through; color: var(--mono-dim); }
+.ledger .foot { color: var(--mono-dim); margin-top: 0.6rem; padding-top: 0.5rem; border-top: 1px solid var(--mono-dim); white-space: normal; }
+
+/* grilles */
+.grid { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.tile { padding: 1.3rem 1.3rem 1.4rem; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; display: grid; gap: 0.55rem; align-content: start; min-width: 0; }
+.tile h3 { font-family: var(--body); font-size: 1.02rem; font-weight: 600; }
+.tile p { color: var(--fg-2); font-size: 0.96rem; }
+.tile .num { font-family: var(--display); font-size: 2.1rem; font-weight: 700; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* pipeline */
+.pipe { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--paper); }
+.pipe > div { padding: 1.2rem 1.25rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; gap: 0.4rem; align-content: start; min-width: 0; }
+.pipe .step { font-family: var(--mono); font-size: 0.74rem; color: var(--accent); letter-spacing: 0.08em; }
+.pipe p { font-size: 0.95rem; color: var(--fg-2); }
+
+/* tableau */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; min-width: 420px; }
+th, td { padding: 0.65rem 1rem; text-align: right; border-bottom: 1px solid var(--line); }
+th:first-child, td:first-child { text-align: left; }
+th { font-family: var(--mono); font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-2); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td.win { color: var(--accent); font-weight: 600; }
+.note { font-size: 0.92rem; color: var(--fg-2); max-width: 70ch; }
+
+/* commandes */
+.cmds { display: grid; gap: 0.8rem; }
+.cmd { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.35rem; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 0.9rem 1rem; }
+.cmd pre { font-size: 0.9rem; overflow-x: auto; color: var(--fg); }
+.cmd p { font-size: 0.93rem; color: var(--fg-2); }
+.cmd .art { font-family: var(--mono); font-size: 0.74rem; color: var(--accent); letter-spacing: 0.06em; }
+
+/* compat */
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip { font-family: var(--mono); font-size: 0.84rem; padding: 0.35rem 0.7rem; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); }
+
+/* offres */
+.plans { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-items: stretch; }
+.plan { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 1.5rem 1.5rem 1.6rem; display: grid; gap: 0.9rem; align-content: start; min-width: 0; }
+.plan.featured { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.plan .name { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); }
+.plan .price { font-family: var(--display); font-size: 2.3rem; font-weight: 700; line-height: 1; }
+.plan .price small { font-family: var(--body); font-size: 0.95rem; font-weight: 400; color: var(--fg-2); margin-left: 0.3rem; }
+.plan ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.35rem; font-size: 0.95rem; color: var(--fg-2); }
+.plan .for { font-size: 0.93rem; color: var(--fg); }
+.plan .btn { justify-self: start; margin-top: 0.3rem; }
+
+/* faq */
+details { border-top: 1px solid var(--line); padding-block: 0.9rem; }
+details:last-of-type { border-bottom: 1px solid var(--line); }
+summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
+summary::after { content: "+"; font-family: var(--mono); color: var(--accent); }
+details[open] summary::after { content: "–"; }
+details p { margin-top: 0.6rem; color: var(--fg-2); max-width: 70ch; }
+
+/* contact */
+.contact { display: grid; gap: 1rem; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 1.6rem; }
+.email { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; font-family: var(--mono); font-size: 1.05rem; }
+.email .copybtn { color: var(--accent); border-color: var(--accent); }
+footer { padding-block: 2rem 3rem; color: var(--fg-2); font-size: 0.88rem; border-top: 1px solid var(--line); }
+footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+
+@media (max-width: 760px) {
+  .hero .wrap { grid-template-columns: 1fr; }
+  body { font-size: 16px; }
+  section { padding-block: 3rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ledger .row { animation: in 0.5s ease both; }
+  .ledger .row:nth-child(2) { animation-delay: 0.08s } .ledger .row:nth-child(3) { animation-delay: 0.16s }
+  .ledger .row:nth-child(4) { animation-delay: 0.24s } .ledger .row:nth-child(5) { animation-delay: 0.32s } .ledger .row:nth-child(6) { animation-delay: 0.40s }
+  @keyframes in { from { opacity: 0.35; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="#top">memoryaicm<small>mémoire locale pour agents LLM</small></a>
+    <nav>
+      <a href="#pourquoi">Pourquoi</a>
+      <a href="#fonctionnement">Fonctionnement</a>
+      <a href="#mesures">Mesures</a>
+      <a href="#rgpd">RGPD</a>
+      <a href="#offres">Offres</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="copy">
+      <div class="eyebrow">Python pur · zéro dépendance · Windows, Linux, macOS</div>
+      <h1>Une mémoire pour votre IA qui ne quitte jamais votre machine.</h1>
+      <p class="lede">memoryaicm donne une mémoire longue à Claude, à un modèle local ou à votre propre agent. Un journal qu'on ne peut ni modifier ni effacer, un index qui s'en déduit, un validateur hors modèle. Auditable ligne par ligne, conforme RGPD, mesuré sur un banc public.</p>
+      <div class="install">
+        <code><span class="dim">$</span> pip install memoryaicm</code>
+        <button class="copybtn" type="button" data-copy="pip install memoryaicm">copier</button>
+      </div>
+      <div class="cta">
+        <a class="btn primary" href="#offres">Voir les offres</a>
+        <a class="btn ghost" href="#fonctionnement">Comment ça marche</a>
+      </div>
+    </div>
+    <div class="ledger" aria-label="Extrait d'un journal memoryaicm">
+      <div class="hd"><span>journal.sqlite · append-only · SHA-256</span><span>5 événements</span></div>
+      <div class="row"><span class="t">10:41:02</span><span class="k">turn.user</span><span class="p">« je m'appelle Camille et j'utilise neovim »</span></div>
+      <div class="row"><span class="t">10:41:02</span><span class="k">fact.write</span><span class="p">s'appelle Camille · sujet=nom · src=USER</span></div>
+      <div class="row"><span class="t">10:41:02</span><span class="k">fact.write</span><span class="p">éditeur : neovim · sujet=éditeur · src=USER</span></div>
+      <div class="row"><span class="t">10:52:17</span><span class="k">ingest.ext</span><span class="p">page-web → quarantaine (instruction détectée)</span></div>
+      <div class="row off"><span class="t">11:03:40</span><span class="k">fact.forget</span><span class="p">éditeur : neovim</span></div>
+      <div class="foot">hash 7f3a…c91e ← prev 0b22…e4d7 · chaîne intacte · oublier = désindexer, jamais détruire</div>
+    </div>
+  </div>
+</section>
+
+<section id="pourquoi">
+  <div class="wrap stack">
+    <div>
+      <div class="eyebrow">Pourquoi</div>
+      <h2>Ce que les mémoires « cloud » ne font pas</h2>
+    </div>
+    <div class="grid">
+      <div class="tile">
+        <h3>Rien ne sort de la machine</h3>
+        <p>Un fichier SQLite est la source de vérité. Pas de base vectorielle, pas de service tiers, pas de clé obligatoire. Fonctionne hors ligne avec un modèle local, ou avec Claude, OpenAI, Gemini si vous le décidez.</p>
+      </div>
+      <div class="tile">
+        <h3>Auditable ligne par ligne</h3>
+        <p>Journal append-only, chaîné SHA-256, horodaté et attribué. Même le logiciel ne peut pas modifier ou supprimer une ligne. Toute altération externe est détectée par <code>verify</code>.</p>
+      </div>
+      <div class="tile">
+        <h3>Dit, pas déduit</h3>
+        <p>Un fait n'est retenu que s'il est ancré dans ce que la personne a écrit, vérifié mécaniquement. Une page web ou un document est une donnée : l'instruction qui s'y cache part en quarantaine.</p>
+      </div>
+      <div class="tile">
+        <h3>Un validateur hors modèle</h3>
+        <p>Secrets, canaris, valeurs périmées, instructions externes suivies : bloqués avant la réponse, par des règles dures. L'adhésion aux consignes ne dépend jamais du modèle seul.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fonctionnement">
+  <div class="wrap stack">
+    <div>
+      <div class="eyebrow">Fonctionnement</div>
+      <h2>Le modèle propose, la mémoire décide</h2>
+      <p class="lede">Trois couches, chacune déduite de la précédente. Le journal est la seule vérité ; l'index et le profil compilé se reconstruisent à l'identique à partir de lui.</p>
+    </div>
+    <div class="pipe">
+      <div><span class="step">01 · JOURNAL</span><h3>Tout est écrit</h3><p>Chaque tour, chaque fait, chaque oubli devient un événement daté, attribué et chaîné. Plein texte sur l'ensemble, y compris ce qui est désindexé.</p></div>
+      <div><span class="step">02 · POLITIQUE</span><h3>Porte d'écriture</h3><p>Durabilité, conflit (fusion versionnée), saillance, sensibilité. Un fait sensible attend une validation humaine. Quatre niveaux d'autonomie, de « observer » à « routines ».</p></div>
+      <div><span class="step">03 · INDEX</span><h3>Rappel hybride</h3><p>Lexical pondéré (racines, synonymes FR/EN, idf) qui décide quand il trouve ; sémantique en recours pour les reformulations. Activation ACT-R : ce qui sert reste, ce qui ne sert plus s'efface de la vue.</p></div>
+      <div><span class="step">04 · SOMMEIL</span><h3>Consolidation testée</h3><p>Dédoublonnage, abstraction, élagage, compilation d'un profil. L'état consolidé n'est promu que si les suites de tests passent ; sinon, annulé. Tout est journalisé.</p></div>
+    </div>
+    <div class="grid">
+      <div class="tile"><span class="num">128</span><p>tests automatisés, verts sous Linux et Windows, Python 3.10 à 3.13.</p></div>
+      <div class="tile"><span class="num">0</span><p>dépendance obligatoire. Bibliothèque standard uniquement ; le chiffrement des sauvegardes est un extra.</p></div>
+      <div class="tile"><span class="num">11</span><p>outils <code>memory_*</code> rendus dans le format de chaque fournisseur : MCP, OpenAI, Anthropic, Gemini, texte.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="compatible">
+  <div class="wrap stack">
+    <div>
+      <div class="eyebrow">Compatibilité</div>
+      <h2>Avec ce que vous utilisez déjà</h2>
+      <p class="lede">Add-on Claude Desktop, Cowork et Claude Code en une commande (serveur MCP + hook). Pour tout le reste, une boucle d'outils générique, un service HTTP local, et des adaptateurs prêts à l'emploi.</p>
+    </div>
+    <div class="chips">
+      <span class="chip">Claude Desktop</span><span class="chip">Claude Code</span><span class="chip">Cowork</span><span class="chip">MCP</span>
+      <span class="chip">Ollama</span><span class="chip">llama.cpp</span><span class="chip">LM Studio</span><span class="chip">vLLM</span>
+      <span class="chip">OpenAI API</span><span class="chip">Anthropic API</span><span class="chip">Gemini</span><span class="chip">LangChain</span>
+      <span class="chip">API HTTP locale</span><span class="chip">Python</span><span class="chip">JavaScript</span><span class="chip">modèles sans appel d'outils</span>
+    </div>
+    <div class="install">
+      <code><span class="dim">$</span> python -m memoryaicm install --write --hook <span class="dim"># Claude Desktop + Claude Code, puis redémarrer Claude</span></code>
+      <button class="copybtn" type="button" data-copy="python -m memoryaicm install --write --hook">copier</button>
+    </div>
+  </div>
+</section>
+
+<section id="mesures">
+  <div class="wrap stack">
+    <div>
+      <div class="eyebrow">Mesures</div>
+      <h2>Mesuré sur LoCoMo, sans juge LLM</h2>
+      <p class="lede">10 conversations, 5 882 tours, 1 536 questions du jeu public LoCoMo, rejouées avec leurs vraies dates. La question : le tour de preuve attendu est-il dans les k premières notes rappelées ? Référence : BM25 sur les mêmes tours.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>k notes rappelées</th><th>memoryaicm (hit@k)</th><th>BM25 (hit@k)</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td class="win">0,340</td><td>0,299</td></tr>
+          <tr><td>5</td><td class="win">0,528</td><td>0,517</td></tr>
+          <tr><td>10</td><td class="win">0,607</td><td>0,602</td></tr>
+          <tr><td>20</td><td>0,674</td><td>0,674</td></tr>
+          <tr><td>30</td><td>0,708</td><td class="win">0,720</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Rappel médian : 97 ms sur 500 à 690 faits, Python pur, sans GPU ni réseau. Les scores que d'autres systèmes publient sur LoCoMo (≈ 90 %) sont notés par GPT-4o et mélangent la mémoire et le modèle qui répond ; ce n'est pas la même grandeur. Point faible mesuré : les questions multi-sauts (0,447 à k = 10). Résultats bruts, scripts et mode d'emploi livrés avec le code.</p>
+  </div>
+</section>
+
+<section id="rgpd">
+  <div class="wrap stack">
+    <div>
+      <div class="eyebrow">RGPD</div>
+      <h2>Les droits de la personne, sans toucher au journal</h2>
+      <p class="lede">Un dossier mémoire = une personne. Les droits s'exercent sur le dossier entier, ce qui préserve l'immuabilité du journal.</p>
+    </div>
+    <div class="cmds">
+      <div class="cmd"><span class="art">ART. 15 · 20 — ACCÈS, PORTABILITÉ</span><pre>python -m memoryaicm export --out export.jsonl</pre><p>Tout le journal, un événement par ligne, hachages inclus : revérifiable sans l'outil.</p></div>
+      <div class="cmd"><span class="art">SAUVEGARDE CHIFFRÉE</span><pre>python -m memoryaicm backup --out mem.maicm</pre><p>Instantané cohérent du journal, AES-256-GCM, clé propre au dossier et jamais copiée dans la sauvegarde.</p></div>
+      <div class="cmd"><span class="art">ART. 17 — EFFACEMENT</span><pre>python -m memoryaicm erase --yes</pre><p>La clé est détruite : toutes les sauvegardes chiffrées deviennent illisibles. Chaque fichier est écrasé puis supprimé. Seule reste une pierre tombale datée, sans contenu.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="offres">
+  <div class="wrap stack">
+    <div>
+      <div class="eyebrow">Offres</div>
+      <h2>Libre pour le libre, commercial pour le reste</h2>
+      <p class="lede">Le code est publié sous AGPL-3.0 : utilisez-le, modifiez-le, redistribuez-le en publiant vos modifications. Pour l'intégrer dans un produit ou un service sans publier votre code, ou pour être accompagné, prenez une licence commerciale.</p>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <span class="name">Communauté</span>
+        <div class="price">0 €<small>AGPL-3.0</small></div>
+        <p class="for">Projets libres, recherche, évaluation, usage personnel.</p>
+        <ul>
+          <li>Code source complet, 128 tests</li>
+          <li>Add-on Claude, tous les adaptateurs, service HTTP</li>
+          <li>Export, sauvegarde chiffrée, effacement RGPD</li>
+          <li>Obligation de publier les œuvres dérivées, y compris en service réseau</li>
+        </ul>
+        <a class="btn ghost" href="#contact">Obtenir le code</a>
+      </div>
+      <div class="plan featured">
+        <span class="name">Pro</span>
+        <div class="price">49 €<small>par poste, paiement unique</small></div>
+        <p class="for">Indépendants et petites équipes qui veulent une mémoire locale pour Claude sans y passer la journée.</p>
+        <ul>
+          <li>Installeur Windows en un clic (Claude Desktop, Cowork, Claude Code)</li>
+          <li>Mises à jour pendant un an</li>
+          <li>Support par e-mail, réponse sous deux jours ouvrés</li>
+          <li>Usage interne sans obligation de publication</li>
+        </ul>
+        <a class="btn primary" href="#contact">Commander</a>
+      </div>
+      <div class="plan">
+        <span class="name">Entreprise</span>
+        <div class="price">Sur devis</div>
+        <p class="for">Éditeurs et services qui intègrent memoryaicm dans leur produit, ou qui veulent une mémoire souveraine branchée sur leur agent.</p>
+        <ul>
+          <li>Licence commerciale : intégration sans publier votre code</li>
+          <li>Intégration sur votre agent existant, à partir de 600 € / jour</li>
+          <li>Audit RGPD de la mémoire, documentation des traitements</li>
+          <li>Support et mises à jour prioritaires</li>
+        </ul>
+        <a class="btn ghost" href="#contact">Demander un devis</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap stack">
+    <div>
+      <div class="eyebrow">Questions</div>
+      <h2>Ce qu'on nous demande</h2>
+    </div>
+    <div>
+      <details><summary>Où vont mes données ?</summary><p>Dans un dossier sur votre disque : <code>journal.sqlite</code> (la vérité), <code>index.sqlite</code> (reconstructible), un profil compilé. Aucune requête réseau n'est faite par la mémoire elle-même. Si vous branchez un modèle distant pour l'extraction des faits, c'est ce modèle qui reçoit le texte des tours, pas le journal.</p></details>
+      <details><summary>Est-ce comparable à Mem0, Zep ou Letta ?</summary><p>Ce sont de bons produits, pensés pour le cloud et notés par un juge GPT-4o. memoryaicm est pensé pour tourner en local sans dépendance, avec un journal immuable et un validateur hors modèle. Nous publions notre mesure (récupération pure, sans juge) et ses limites ; nous ne comparons pas des chiffres qui ne mesurent pas la même chose.</p></details>
+      <details><summary>Pourquoi l'AGPL ?</summary><p>Pour que le logiciel reste libre, y compris quand il est offert comme service en ligne : qui l'améliore et l'héberge doit publier ses améliorations. Les entreprises qui ne veulent pas de cette obligation prennent la licence commerciale ; c'est ce qui finance le développement.</p></details>
+      <details><summary>Quels modèles ?</summary><p>N'importe lequel. Avec appel d'outils (Claude, GPT, Gemini, Llama, Qwen, Mistral via Ollama, llama.cpp, LM Studio, vLLM) ou sans : un protocole texte existe pour les modèles qui ne savent pas appeler d'outils. Sans aucun modèle, un extracteur à règles FR/EN fait tourner l'ensemble hors ligne.</p></details>
+      <details><summary>Et le droit à l'effacement, avec un journal qu'on ne supprime jamais ?</summary><p>Un dossier = une personne. L'effacement détruit la clé de chiffrement des sauvegardes, écrase puis supprime chaque fichier du dossier. Le journal n'est pas édité ligne par ligne : il est effacé en entier, ce qui est précisément ce que demande l'article 17.</p></details>
+      <details><summary>Windows, Linux, macOS ?</summary><p>Les trois. Python 3.10 ou plus. Les tests tournent sous Linux et Windows en intégration continue. L'installeur en un clic de l'offre Pro vise Windows ; sur les autres systèmes, une commande suffit.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="contact">
+      <div class="eyebrow">Contact</div>
+      <h2>Licence, devis, intégration</h2>
+      <p class="lede">Écrivez-nous en indiquant votre cas d'usage (quel agent, quel modèle, quel volume). Réponse sous deux jours ouvrés.</p>
+      <div class="email"><span id="mail">baumela.eugene@gmail.com</span><button class="copybtn" type="button" data-copy="baumela.eugene@gmail.com">copier l'adresse</button></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Eugène Baumela · memoryaicm</span>
+    <span>AGPL-3.0-or-later ou licence commerciale</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  function fallbackSelect(text, btn) {
+    var span = document.createElement("span");
+    span.textContent = text; span.style.position = "fixed"; span.style.left = "-9999px";
+    document.body.appendChild(span);
+    var r = document.createRange(); r.selectNodeContents(span);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    try { document.execCommand("copy"); } catch (e) {}
+    s.removeAllRanges(); document.body.removeChild(span);
+  }
+  document.querySelectorAll(".copybtn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var text = btn.getAttribute("data-copy"), label = btn.textContent;
+      var done = function () { btn.textContent = "copié"; setTimeout(function () { btn.textContent = label; }, 1400); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallbackSelect(text, btn); done(); });
+      } else { fallbackSelect(text, btn); done(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>

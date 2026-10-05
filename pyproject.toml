@@ -34,10 +34,10 @@ secure = ["cryptography>=42"]
 dev = ["pytest>=8", "cryptography>=42", "build>=1.2", "twine>=5"]
 
 [project.urls]
-Homepage = "https://github.com/VOTRE-COMPTE/memoryaicm"
-Source = "https://github.com/VOTRE-COMPTE/memoryaicm"
-Issues = "https://github.com/VOTRE-COMPTE/memoryaicm/issues"
-Changelog = "https://github.com/VOTRE-COMPTE/memoryaicm/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/GotoRyugen/memoryaicm"
+Source = "https://github.com/GotoRyugen/memoryaicm"
+Issues = "https://github.com/GotoRyugen/memoryaicm/issues"
+Changelog = "https://github.com/GotoRyugen/memoryaicm/blob/main/CHANGELOG.md"
 
 [project.scripts]
 memoryaicm = "memoryaicm.cli:main"

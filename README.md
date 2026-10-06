@@ -1,5 +1,7 @@
 # memoryaicm — mémoire locale, auditable et neutre pour agents LLM
 
+Site : https://gotoryugen.github.io/memoryaicm/ · Code : https://github.com/GotoRyugen/memoryaicm · Boutique : https://memoryaicm.lemonsqueezy.com
+
 [English version](README.en.md) · [Changelog](CHANGELOG.md) · [Licence : AGPL-3.0 ou commerciale](LICENSE-COMMERCIAL.md)
 
 **memoryaicm** donne une mémoire longue à n'importe quel assistant ou agent — Claude Desktop, Claude Code,

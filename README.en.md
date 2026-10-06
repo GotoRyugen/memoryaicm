@@ -1,5 +1,7 @@
 # memoryaicm — local, auditable, provider-neutral memory for LLM agents
 
+Site: https://gotoryugen.github.io/memoryaicm/ · Code: https://github.com/GotoRyugen/memoryaicm · Store: https://memoryaicm.lemonsqueezy.com
+
 [Version française](README.md) · [Changelog](CHANGELOG.md) · [Licence: AGPL-3.0 or commercial](LICENSE-COMMERCIAL.md)
 
 **memoryaicm** gives long-term memory to any assistant or agent — Claude Desktop, Claude Code, a local model

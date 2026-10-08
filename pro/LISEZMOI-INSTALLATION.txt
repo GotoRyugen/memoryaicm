@@ -1,7 +1,7 @@
 memoryaicm Pro {version} — installation
 ========================================
 
-Merci pour votre achat. Gardez votre clé de licence (reçue par e-mail) : elle sert pour le support et les mises à jour.
+Merci pour votre achat. Gardez votre reçu d'achat itch.io (e-mail de confirmation) : il sert pour le support et les mises à jour.
 
 PRÉREQUIS (Windows)
 - Python 3.10 ou plus : https://www.python.org/downloads/ — à l'installation, cocher « Add python.exe to PATH ».
@@ -17,9 +17,12 @@ INSTALLATION EN UN CLIC (Windows)
 3. Redémarrez Claude Desktop. Les outils memory_* apparaissent dans la liste des outils.
    Vos données vivent dans le dossier data\ à côté de ce fichier. Elles ne quittent jamais votre machine.
 
-LINUX / MACOS
-   pip install -e .
-   python -m memoryaicm install --write --hook
+INSTALLATION EN UNE COMMANDE (Linux / macOS)
+1. Décompressez ce zip là où vous voulez le garder, par exemple ~/memoryaicm, puis ne le déplacez plus.
+2. Dans un terminal, dans ce dossier :   ./install-claude.sh
+   (même travail que la version Windows : environnement, auto-test, Claude Desktop, hook et Claude Code).
+   Prérequis : Python 3.10 ou plus ; sous Debian/Ubuntu, le paquet python3-venv.
+3. Redémarrez Claude Desktop. Le détail est dans install.log.
 
 SANS CLAUDE
    chat.ps1   conversation locale (modèle local via Ollama si présent, sinon règles hors ligne)
@@ -31,7 +34,7 @@ RGPD (voir README.md, section RGPD)
    python -m memoryaicm erase --yes                   effacement définitif
 
 SUPPORT ET MISES À JOUR
-   E-mail : baumela.eugene@gmail.com — indiquez votre clé de licence et joignez install.log en cas de problème.
+   E-mail : baumela.eugene@gmail.com — indiquez l'adresse e-mail utilisée pour l'achat sur itch.io et joignez install.log en cas de problème.
    Réponse sous deux jours ouvrés. Mises à jour envoyées par e-mail pendant un an à compter de l'achat.
 
 Documentation complète : README.md (français), README.en.md (anglais), docs\.

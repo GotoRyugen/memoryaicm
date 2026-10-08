@@ -145,3 +145,13 @@ def test_erase_via_cli(agent, settings, capsys):
 def test_erase_dossier_inexistant(tmp_path):
     r = privacy.erase(Settings(root=tmp_path / "nope"), confirm=True)
     assert r["existed"] is False
+
+
+def test_cle_ecrite_en_binaire_et_cle_windows_reparee(settings):
+    """Windows écrivait vault.key en mode texte : un octet 0x0A devenait \\r\\n (33 octets, clé « invalide »)."""
+    key = privacy.vault_key(settings)
+    assert privacy.key_path(settings).read_bytes() == key and len(key) == 32
+    abimee = bytes(range(10, 42))  # commence par 0x0A
+    privacy.key_path(settings).write_bytes(abimee.replace(b"\n", b"\r\n"))
+    assert privacy.vault_key(settings, create=False) == abimee
+    assert privacy.key_path(settings).read_bytes() == abimee

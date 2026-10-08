@@ -59,18 +59,33 @@ def vault_key(settings: Settings, create: bool = True) -> bytes:
     if p.exists():
         key = p.read_bytes()
         if len(key) != 32:
-            raise PrivacyError(f"clé invalide : {p}")
+            # Avant 0.6.1, Windows écrivait la clé en mode texte : chaque octet 0x0A devenait \r\n.
+            # La conversion est sans ambiguïté (un \r\n d'origine serait devenu \r\r\n) : on répare.
+            fixed = key.replace(b"\r\n", b"\n")
+            if len(fixed) != 32:
+                raise PrivacyError(f"clé invalide : {p}")
+            _write_key(p, fixed, replace=True)
+            key = fixed
         return key
     if not create:
         raise PrivacyError(f"aucune clé : {p}")
     settings.root.mkdir(parents=True, exist_ok=True)
     key = secrets.token_bytes(32)
-    fd = os.open(str(p), os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    _write_key(p, key)
+    return key
+
+
+def _write_key(p: Path, key: bytes, replace: bool = False) -> None:
+    """Écriture binaire (O_BINARY : sans lui, Windows transforme 0x0A en \r\n), lisible du seul propriétaire."""
+    flags = os.O_WRONLY | os.O_CREAT | getattr(os, "O_BINARY", 0)
+    target = p.with_name(p.name + ".tmp") if replace else p
+    fd = os.open(str(target), flags | (os.O_TRUNC if replace else os.O_EXCL), 0o600)
     try:
         os.write(fd, key)
     finally:
         os.close(fd)
-    return key
+    if replace:
+        os.replace(target, p)
 
 
 def encrypt_bytes(key: bytes, data: bytes, aad: bytes = b"") -> bytes:

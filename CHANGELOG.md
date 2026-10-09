@@ -2,6 +2,18 @@
 
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) · versions : [SemVer](https://semver.org/lang/fr/).
 
+## [0.6.1] — 2026-10-09
+
+### Corrigé
+- **Clé du coffre sous Windows** (`vault.key`) : elle était écrite en mode texte, si bien qu'un octet 0x0A
+  devenait `\r\n` (environ une clé sur huit). La clé faisait alors 33 octets et la sauvegarde chiffrée
+  devenait illisible (« clé invalide »). Écriture désormais binaire (`O_BINARY`) ; une clé déjà abîmée est
+  réparée automatiquement à la première lecture, sans perte.
+
+### Pro
+- Achat et livraison via itch.io (elevennightmare.itch.io/memoryaicm-pro) ; installeur Linux/macOS
+  `install-claude.sh` dans le zip Pro.
+
 ## [0.6.0] — 2026-10-05
 
 ### Ajouté

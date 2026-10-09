@@ -14,4 +14,4 @@ from .index import Index
 from .agent import MemoryAgent
 
 __all__ = ["Settings", "Fact", "Kind", "Src", "Event", "Journal", "Index", "MemoryAgent"]
-__version__ = "0.6.0"
+__version__ = "0.6.1"

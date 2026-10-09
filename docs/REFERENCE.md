@@ -1,8 +1,8 @@
-# memoryaicm — Référence complète v0.6.0
+# memoryaicm — Référence complète v0.6.1
 
 *Mémoire tri-couche pour agents LLM, neutre vis-à-vis du modèle. Ce document est la référence exhaustive : architecture,
 modèle de données, algorithmes, protocole universel, interfaces, intégrations, sécurité, exploitation, tests. Les tableaux
-marqués « généré » sont produits depuis le code par `scripts/gen_docs.py` (2026-10-05).*
+marqués « généré » sont produits depuis le code par `scripts/gen_docs.py` (2026-10-09).*
 
 ---
 
@@ -106,7 +106,7 @@ python memoryaicm_neutral.zip chat                     # autonome, hors ligne
 | `memoryaicm/model.py` | 125 | Types de la spec. |
 | `memoryaicm/models.py` | 97 | Approbation des modèles locaux par empreinte SHA-256 — règle reprise d'Echo-Core. |
 | `memoryaicm/policy.py` | 191 | WRITE · Ctx → Log → Index |
-| `memoryaicm/privacy.py` | 224 | RGPD / GDPR — droits de la personne sur sa mémoire. |
+| `memoryaicm/privacy.py` | 239 | RGPD / GDPR — droits de la personne sur sa mémoire. |
 | `memoryaicm/serve.py` | 285 | Mode serveur : la mémoire devient un service local que d'autres programmes (ou agents) utilisent. |
 | `memoryaicm/sleep.py` | 208 | SLEEP · idle · Log → Index → Adapter |
 | `memoryaicm/textutil.py` | 93 | Normalisation de texte sans dépendance : accents, casse, mots vides, racines courtes. |
@@ -783,8 +783,7 @@ Mémoire épisodique : résumés datés des sessions récentes (ce qui a été r
 
 ```
 usage: memoryaicm [-h] [--home HOME] [--backend BACKEND]
-                  {init,chat,say,ingest,forget,recall,sleep,review,show,search,rebuild,verify,bench,export,backup,restore,erase,serve,mcp,hook,model,install,tools,protocol,agent}
-                  ...
+                  {init,chat,say,ingest,forget,recall,sleep,review,show,search,rebuild,verify,bench,export,backup,restore,erase,serve,mcp,hook,model,install,tools,protocol,agent} ...
 
 CLI : python -m memoryaicm <commande>
 
@@ -989,10 +988,10 @@ SQLite refuse certains montages réseau/VM (« disk I/O error ») : mettre `--ho
 | `test_neutral.py` | 18 | NEUTRALITÉ LLM : mêmes outils pour tout fournisseur · boucles d'outils (OpenAI, Anthropic, texte) · backends callable / HTTP · Claude sans SDK · CLI tools/protocol. |
 | `test_neutral_zip.py` | 3 | ARCHIVE NEUTRE : construction reproductible, exécution telle quelle depuis un répertoire vierge, manifeste, dézippage. |
 | `test_policy.py` | 11 | WRITE : porte · durabilité · INFER · conflit/merge · renforcement · sensible · saillance. |
-| `test_privacy.py` | 10 | RGPD : export (accès, portabilité), backup/restore chiffrés, erase (effacement, crypto-shredding). |
+| `test_privacy.py` | 11 | RGPD : export (accès, portabilité), backup/restore chiffrés, erase (effacement, crypto-shredding). |
 | `test_sleep.py` | 7 | SLEEP : dedup · conflits · abstraction · élagage/ttl · compile → tests → promote | rollback. |
 | `test_transcript_integral.py` | 5 | L'add-on Claude doit pouvoir relire MOT POUR MOT ce que la mémoire a gardé. Le journal conservait déjà tout, mais `memory_search` coupait sa sortie à 200 caractères : le lecteur ne voyait jamais plus de 200 caractères de ce qui était pourtant conservé — la mémoire était complète, la fenêtre ne l'était pas. `memory_read` rend un événement entier, et `memory_transcript` archive la conversation elle-même, sans plafond ni résumé. |
-| **total** | **128** | |
+| **total** | **129** | |
 
 Exécution : `python -m pytest -q` (dépôt ou archive dézippée). Les tests ne dépendent ni du `.env` ni des variables de la
 machine (fixture autouse `_neutral_environment`), tournent hors ligne, et simulent les fournisseurs (OpenAI, Anthropic,

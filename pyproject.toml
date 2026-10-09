@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "memoryaicm"
-version = "0.6.0"
+version = "0.6.1"
 description = "Mémoire locale, auditable et neutre pour agents LLM — journal append-only chaîné SHA-256, index ACT-R, consolidation, validateur hors modèle, RGPD. Local, auditable, provider-neutral memory for LLM agents."
 readme = "README.md"
 requires-python = ">=3.10"

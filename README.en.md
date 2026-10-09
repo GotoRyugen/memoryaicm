@@ -43,7 +43,7 @@ pip install "memoryaicm[secure] @ https://github.com/GotoRyugen/memoryaicm/archi
 pip install "memoryaicm[claude] @ https://github.com/GotoRyugen/memoryaicm/archive/refs/heads/main.zip"   # + Anthropic SDK (optional)
 ```
 
-The package is not on PyPI yet: plain `pip install memoryaicm` does not work yet.
+memoryaicm installs from GitHub; it is not published on PyPI.
 
 From source: `pip install -e ".[dev]"` then `python -m pytest` (128 tests, Linux and Windows). On Windows the
 scripts `setup.ps1`, `install-claude.ps1`, `chat.ps1` and `serve.ps1` do the same from the repository folder.

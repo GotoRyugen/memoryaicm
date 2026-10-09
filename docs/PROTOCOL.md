@@ -1,4 +1,4 @@
-# Protocole mémoire universel — memoryaicm v0.6.1
+# Protocole mémoire universel — memoryaicm v0.6.2
 
 > **Un LLM ne lit ni n'écrit jamais directement dans la mémoire.** Il *propose* (des faits extraits, une question,
 > un « oublie ») ; la mémoire *décide* (politique d'écriture, ancrage, conflit, sensibilité, autonomie) et *journalise*.
@@ -197,4 +197,4 @@ system = system_prompt()                                 # + router.brief() pour
 | `ollama_probe_timeout_s` | `0.4` |  |
 
 ---
-*Généré par `scripts/gen_docs.py` depuis `memoryaicm/tools.py` et `memoryaicm/config.py` — version 0.6.1.*
+*Généré par `scripts/gen_docs.py` depuis `memoryaicm/tools.py` et `memoryaicm/config.py` — version 0.6.2.*

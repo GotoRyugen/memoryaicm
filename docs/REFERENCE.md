@@ -1,4 +1,4 @@
-# memoryaicm — Référence complète v0.6.1
+# memoryaicm — Référence complète v0.6.2
 
 *Mémoire tri-couche pour agents LLM, neutre vis-à-vis du modèle. Ce document est la référence exhaustive : architecture,
 modèle de données, algorithmes, protocole universel, interfaces, intégrations, sécurité, exploitation, tests. Les tableaux
@@ -84,7 +84,7 @@ python memoryaicm_neutral.zip chat                     # autonome, hors ligne
 | `memoryaicm/agent.py` | 359 | Orchestration d'un tour : tout passe par le journal. |
 | `memoryaicm/bench.py` | 105 | Tests exécutés AVANT de promouvoir un état consolidé : « état consolidé promu ⇔ tests verts ». |
 | `memoryaicm/calibrate.py` | 81 | CALIBRATE · W |
-| `memoryaicm/cli.py` | 536 | CLI : python -m memoryaicm <commande> |
+| `memoryaicm/cli.py` | 548 | CLI : python -m memoryaicm <commande> |
 | `memoryaicm/config.py` | 136 | Réglages du système. Chaque seuil correspond à un symbole de la spec. |
 | `memoryaicm/context.py` | 58 | L2 · CONTEXTE — Ctx = [ sys · notes{f+label} · hist · prefs@fin · user ] |
 | `memoryaicm/embed.py` | 118 | Vecteurs pour la récupération sémantique — le complément du lexical. |
@@ -974,7 +974,7 @@ SQLite refuse certains montages réseau/VM (« disk I/O error ») : mettre `--ho
 | Fichier | Tests | Couvre |
 |---|---|---|
 | `test_aca_integration.py` | 6 | ACA / Echo-Core : memoryaicm comme LongTermMemoryPort, testé contre le vrai module `aca/memory.py` (copie de référence dans tests/aca_ref, ou chemin MEMORYAICM_ACA_MEMORY) et, à défaut, contre les équivalents locaux. |
-| `test_autonomy.py` | 6 | AUTONOMIE : sommeil automatique (tours, inactivité) · auto-contrôle au démarrage · service local · backend auto. |
+| `test_autonomy.py` | 7 | AUTONOMIE : sommeil automatique (tours, inactivité) · auto-contrôle au démarrage · service local · backend auto. |
 | `test_bench.py` | 3 | Suites de promotion : rappel · injection (journal en mémoire, rien n'est écrit) · lignage · journal. |
 | `test_context_guard_calibrate.py` | 12 | CONTEXTE (prefs en fin, notes étiquetées, externe = donnée, compaction) · VALIDATEUR · CALIBRATION. |
 | `test_depth.py` | 8 | PROFONDEUR : récupération hybride · vecteurs reconstructibles · historique · résumés de session · garde anti-valeur périmée · ressources/prompts MCP · hook Claude Code. |
@@ -991,7 +991,7 @@ SQLite refuse certains montages réseau/VM (« disk I/O error ») : mettre `--ho
 | `test_privacy.py` | 11 | RGPD : export (accès, portabilité), backup/restore chiffrés, erase (effacement, crypto-shredding). |
 | `test_sleep.py` | 7 | SLEEP : dedup · conflits · abstraction · élagage/ttl · compile → tests → promote | rollback. |
 | `test_transcript_integral.py` | 5 | L'add-on Claude doit pouvoir relire MOT POUR MOT ce que la mémoire a gardé. Le journal conservait déjà tout, mais `memory_search` coupait sa sortie à 200 caractères : le lecteur ne voyait jamais plus de 200 caractères de ce qui était pourtant conservé — la mémoire était complète, la fenêtre ne l'était pas. `memory_read` rend un événement entier, et `memory_transcript` archive la conversation elle-même, sans plafond ni résumé. |
-| **total** | **129** | |
+| **total** | **130** | |
 
 Exécution : `python -m pytest -q` (dépôt ou archive dézippée). Les tests ne dépendent ni du `.env` ni des variables de la
 machine (fixture autouse `_neutral_environment`), tournent hors ligne, et simulent les fournisseurs (OpenAI, Anthropic,

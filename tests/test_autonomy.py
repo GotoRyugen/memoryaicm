@@ -120,3 +120,16 @@ def test_local_service_end_to_end(tmp_path):
         srv.shutdown()
         srv.server_close()
         a.close()
+
+
+def test_ligne_de_hook_survit_a_bash_sous_windows():
+    """Claude Code lance les hooks avec Git Bash sous Windows : un C:\\Users\\... hors guillemets y perdait ses
+    antislashs (« UsersbaumeAppData... »), Python sortait en code 2 et le hook bloquait chaque message."""
+    import shlex
+    from memoryaicm.cli import _shell_line
+    cmd = [r"C:\Program Files\Python310\python.exe",
+           r"C:\Users\baume\AppData\Roaming\Python\Python310\site-packages\memoryaicm\__main__.py",
+           "--home", r"C:\Users\baume\memoryaicm-data", "hook", "prompt"]
+    line = _shell_line(cmd)
+    assert "\\" not in line
+    assert shlex.split(line) == [c.replace("\\", "/") for c in cmd]

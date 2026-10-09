@@ -2,6 +2,14 @@
 
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) · versions : [SemVer](https://semver.org/lang/fr/).
 
+## [0.6.2] — 2026-10-09
+
+### Corrigé
+- **Hook Claude Code sous Windows** (`memoryaicm install --hook`) : Claude Code exécute les hooks avec Git Bash,
+  qui supprimait les antislashs des chemins non entre guillemets ; Python ne trouvait plus le fichier, sortait
+  en code 2, et Claude Code bloquait chaque message (« Invite bloquée par un hook »). Les chemins sont désormais
+  écrits en barres obliques et entre guillemets. Relancer `install --hook` répare une installation existante.
+
 ## [0.6.1] — 2026-10-09
 
 ### Corrigé

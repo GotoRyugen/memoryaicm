@@ -309,6 +309,18 @@ def _merge_json_file(path: Path, mutate) -> Path | None:
     return backup
 
 
+def _shell_line(cmd: list[str]) -> str:
+    """Ligne de commande lisible par Bash (Git Bash, celui des hooks Claude Code sous Windows), PowerShell et cmd :
+    chaque argument entre guillemets, chemins Windows en barres obliques (Bash mange les antislashs hors guillemets,
+    et C:/Users/... est accepté partout sous Windows)."""
+    out = []
+    for c in cmd:
+        if len(c) > 2 and c[1] == ":" and c[0].isalpha() and "\\" in c:
+            c = c.replace("\\", "/")
+        out.append('"' + c.replace('"', '\\"') + '"' if (" " in c or "/" in c or "\\" in c or '"' in c) else c)
+    return " ".join(out)
+
+
 def cmd_install(args) -> None:
     """Configuration de l'add-on Claude, portable : affiche (ou écrit avec --write) l'entrée MCP de Claude Desktop,
     et le hook UserPromptSubmit de Claude Code (--hook). Fonctionne depuis le paquet, un venv ou l'archive zip."""
@@ -323,10 +335,10 @@ def cmd_install(args) -> None:
     cfg_path = _claude_desktop_config_path()
     print("# Claude Desktop / Cowork —", cfg_path)
     print(json.dumps({"mcpServers": {"memoryaicm": entry}}, ensure_ascii=False, indent=2))
-    quoted = " ".join(f'"{c}"' if " " in c else c for c in mcp_cmd)
+    quoted = _shell_line(mcp_cmd)
     print("\n# Claude Code (serveur MCP, portée utilisateur) :")
     print(f"claude mcp add --scope user memoryaicm -- {quoted}")
-    hook_line = " ".join(f'"{c}"' if " " in c else c for c in hook_cmd)
+    hook_line = _shell_line(hook_cmd)
     print("\n# Claude Code (hook UserPromptSubmit, ~/.claude/settings.json) :")
     print(json.dumps({"hooks": {"UserPromptSubmit": [{"hooks": [{"type": "command", "command": hook_line, "timeout": 20}]}]}}, ensure_ascii=False, indent=2))
     if not (args.write or args.hook):

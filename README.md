@@ -38,10 +38,12 @@ adhésion 100 % ∈ gardes        jamais dans le modèle seul
 ## Installation
 
 ```bash
-pip install memoryaicm                 # cœur, zéro dépendance (Python ≥ 3.10)
-pip install "memoryaicm[secure]"       # + chiffrement des sauvegardes (cryptography)
-pip install "memoryaicm[claude]"       # + SDK Anthropic (facultatif : l'API directe fonctionne sans)
+pip install https://github.com/GotoRyugen/memoryaicm/archive/refs/heads/main.zip                     # cœur, zéro dépendance (Python ≥ 3.10)
+pip install "memoryaicm[secure] @ https://github.com/GotoRyugen/memoryaicm/archive/refs/heads/main.zip"   # + chiffrement des sauvegardes (cryptography)
+pip install "memoryaicm[claude] @ https://github.com/GotoRyugen/memoryaicm/archive/refs/heads/main.zip"   # + SDK Anthropic (facultatif)
 ```
+
+Le paquet n'est pas encore publié sur PyPI : `pip install memoryaicm` tout court ne fonctionne pas encore.
 
 Depuis les sources : `pip install -e ".[dev]"` puis `python -m pytest` (128 tests, Linux et Windows).
 Sous Windows, les scripts `setup.ps1`, `install-claude.ps1`, `chat.ps1` et `serve.ps1` font la même chose
